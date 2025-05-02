@@ -12,6 +12,7 @@ const TokenList = lazy(() => import('./pages/TokenList'));
 const Swap = lazy(() => import('./pages/Swap'));
 const Transfer = lazy(() => import('./pages/Transfer'));
 const PreviousClaim = lazy(() => import('./pages/PreviousClaim'));
+const SelectMethod = lazy(() => import('./pages/SelectMethod'));
 
 export default function AppRouter() {
   window.ethereum?.removeAllListeners(['networkChanged']);
@@ -29,6 +30,7 @@ export default function AppRouter() {
         <CookiesBar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/select" element={<SelectMethod />} />
           <Route path="/network" element={<Network />} />
           <Route path="/tokens" element={<TokenList />} />
           <Route path="/swap" element={<Swap />} />
@@ -36,8 +38,8 @@ export default function AppRouter() {
           <Route path="/previousclaim" element={<PreviousClaim />} />
         </Routes>
       </Suspense>
-      <Footer />
       <ToastListener />
+      <Footer />
     </BrowserRouter>
   );
 }

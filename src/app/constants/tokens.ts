@@ -55,15 +55,6 @@ const tokens = {
     symbol: 'CLO',
     projectLink: 'https://callisto.network/'
   },
-  soy: {
-    symbol: 'SOY',
-    address: {
-      820: '0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65',
-      20729: ''
-    },
-    decimals: 18,
-    projectLink: 'https://app.sloth.finance/'
-  },
   wclo: {
     symbol: 'WCLO',
     address: {
@@ -74,31 +65,13 @@ const tokens = {
     projectLink: 'https://explorer.callisto.network/token/0xA648A7824780780d272b6811ce8186a11b9c6591'
   },
   busdt: {
-    symbol: 'BUSDT',
+    symbol: 'USDT',
     address: {
       820: '0xbf6c50889d3a620eb42C0F188b65aDe90De958c4',
       20729: ''
     },
     decimals: 18,
     projectLink: 'https://explorer.callisto.network/token/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4'
-  },
-  cloe: {
-    symbol: 'CLOE',
-    address: {
-      820: '0x1eAa43544dAa399b87EEcFcC6Fa579D5ea4A6187',
-      20729: ''
-    },
-    decimals: 18,
-    projectLink: 'https://callisto.enterprise/'
-  },
-  cyt: {
-    symbol: 'CYT',
-    address: {
-      820: '0x6182d2cd59227c20B486a53976dcEeAF38e76Eed',
-      20729: ''
-    },
-    decimals: 18,
-    projectLink: 'https://callisto.enterprise/'
   },
   ccbnb: {
     symbol: 'ccBNB',
@@ -128,7 +101,7 @@ export const NATIVE_W_COINS: { [chainId: number | string]: string } = {
   '1': '',
   '42': '',
   '61': '',
-  '199': '0x33e85f0e26600a6644b6c910639B0bc7a99fd34e'
+  '137': '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
 };
 
 export const NATIVE_W_CURRENCY: { [chainId: number | string]: any } = {
@@ -139,7 +112,7 @@ export const NATIVE_W_CURRENCY: { [chainId: number | string]: any } = {
   '1': '',
   '42': '',
   '61': '',
-  '199': '0x33e85f0e26600a6644b6c910639B0bc7a99fd34e'
+  '137': '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
 };
 
 export default tokens;

@@ -2,32 +2,51 @@
   /* min-height: rem(950px); */
   margin-top: rem(20px);
   margin-bottom: rem(80px);
+
   @media only screen and (max-width: $sm) {
     margin-bottom: rem(120px);
   }
+
   &__content {
     position: relative;
     display: flex;
     align-items: flex-start;
+
     .bordercontainer {
       @media only screen and (max-width: $sm) {
         border: none;
       }
     }
+
     .previous_btn {
       margin-bottom: 0px;
+      position: absolute;
+      bottom: -14px;
+
+      @media only screen and (max-width: $lg) {
+        bottom: -60px;
+      }
+
       @media only screen and (max-width: $sm) {
-        margin-bottom: -40px;
+        margin-bottom: 0;
       }
     }
+
     @media only screen and (max-width: $sm) {
       display: block;
     }
+
     &__steps {
-      flex: 1;
-      padding: rem(100px) rem(50px);
-      padding-top: rem(0px);
-      padding-right: rem(0px);
+      flex: 0.6 1;
+
+      @media only screen and (max-width: $lg) {
+        flex: 0.5 1;
+      }
+
+      @media only screen and (max-width: $md) {
+        flex: 0.9 1;
+      }
+
       /* margin-bottom: rem(150px); */
       @media only screen and (max-width: $sm) {
         margin-bottom: rem(0px);
@@ -35,100 +54,148 @@
         padding-left: rem(20px);
         padding-right: rem(20px);
       }
+
+      .networkselection {
+        margin-top: 2.175rem;
+      }
+
       h5 {
-        font-family: 'Lato-Regular';
-        font-size: rem(26px);
-        color: value($color-basic, dark);
+        font-family: 'Expletus-Bold';
+        font-size: 30px;
+        color: #000000;
         letter-spacing: 0.5px;
+        text-transform: capitalize;
       }
+
       p {
-        font-family: 'Lato-Regular';
-        font-size: rem(23px);
-        color: value($color-basic, dark);
-        letter-spacing: 0.5px;
+        font-family: 'NotoSans';
+        font-size: 1.4375rem;
+        color: #000000;
+        text-transform: capitalize;
+        margin-left: 3px;
       }
-      h6 {
-        font-family: 'Lato-Regular';
-        font-size: rem(14px);
-        color: value($color-basic, dark);
+
+      .chain-loading {
+        margin-top: 20px;
+        margin-left: 3px;
+
+        span {
+          margin-left: 15px;
+        }
       }
     }
   }
+
   &__claiminfo {
-    margin-top: rem(100px);
-    padding: rem(40px) rem(0px) rem(0px);
+    margin-top: 6.25rem;
+    padding: 2.5rem 0rem 0rem;
     text-align: center;
+    flex: 0.3;
+    border-radius: 0;
+    border: 2px solid #9f8455;
+
+    @media only screen and (max-width: $md) {
+      flex: 0.4 1;
+    }
+
     @media only screen and (max-width: $sm) {
-      margin-top: rem(20px);
+      margin-top: -1.75rem;
     }
+
+    .container {
+      padding: 0 10px;
+    }
+
     p {
-      padding: rem(0px) rem(35px);
-      font-family: 'Lato-Bold';
-      font-size: rem(18px);
-      color: value($color-basic, dark);
-      letter-spacing: 0.5px;
+      font-family: 'NotoSans';
+      font-size: 1.125rem;
+      color: #252525;
+      letter-spacing: 0.1px;
       text-align: left;
+      padding-right: 3rem;
+      padding-left: 14px;
     }
+
     h6 {
-      padding: rem(0px) rem(35px);
-      margin-top: rem(26px);
-      font-family: 'Lato-Regular';
-      font-size: rem(16px);
-      color: value($color-basic, dark);
+      margin: 1rem 1.1875rem;
+      margin-top: 1.625rem;
+      font-family: 'NotoSans';
+      font-size: 1rem;
+      color: #949494;
       text-align: left;
-    }
-    hr {
-      margin: rem(20px) rem(35px);
-      background-color: value($color-primary, normal);
-    }
-    &__hashInput {
-      border: none;
-      border-bottom: 2px solid #adca46;
-      background: transparent;
-      font-family: 'Lato-Regular';
-      font-size: rem(16px);
-      border-radius: 0px;
-      padding-left: 0px;
-      padding-bottom: rem(10px);
-      width: 80%;
-      margin: 0rem 2.1875rem;
-      margin-top: rem(20px);
-      &:focus {
-        outline: none;
+      border-bottom: 2px solid #d9c6a5;
+      padding-bottom: 0.625rem;
+
+      @media only screen and (max-width: $sm) {
+        width: 94%;
+        margin: 13px auto;
       }
     }
-    &__button {
-      margin-top: rem(15px);
-      width: 100%;
-      padding: rem(15px) rem(0px);
+
+    &__hashInput {
       border: none;
-      border-bottom-left-radius: rem(27px);
-      border-bottom-right-radius: rem(27px);
-      background-color: value($color-primary, normal);
-      font-family: 'Lato-Bold';
-      font-size: rem(20px);
-      color: value($color-basic, brightest);
+      border-bottom: 2px solid #d9c6a5;
+      background: transparent;
+      font-family: 'NotoSans';
+      font-size: 1rem;
+      border-radius: 0px;
+      padding-left: 0px;
+      padding-bottom: 0.625rem;
+      width: 90%;
+      margin: 0;
+      transition: all ease .3s;
+      margin-top: 1.25rem;
+
+      &:hover {
+        border-bottom: 2px solid #ce1f2ee9;
+        transition: all ease .3s;
+      }
+
+      &:focus {
+        outline: none;
+        border-bottom: 2px solid #ce1f2ee9;
+        transition: all ease .3s;
+      }
+
+      @media only screen and (max-width: $sm) {
+        width: 94%;
+      }
+    }
+
+    &__button {
+      margin-top: 0.9375rem;
+      width: 100%;
+      padding: 0.9375rem 0rem;
+      border: none;
+      background-color: #ce1f2e;
+      font-family: 'Expletus-Regular';
+      font-size: 1.25rem;
+      color: #ffffff;
+
       &:disabled {
         opacity: 0.5;
       }
+
       @media only screen and (max-width: $sm) {
         text-align: center;
         display: inline-block;
-        width: 80%;
-        border-radius: rem(15px);
+        width: 90%;
       }
     }
   }
+
   .tokenitem {
     padding-top: rem(30px);
     display: flex;
     justify-content: space-between;
+
     p {
       font-family: 'Lato-Regular';
       font-size: rem(16px);
       color: value($color-basic, dark);
     }
   }
+
   &-option {
     /* width: 50px;
     height: 50px; */
@@ -146,12 +213,14 @@
     font-family: 'Lato-Regular';
     font-size: rem(18px);
     color: value($color-basic, dark);
+
     img {
       width: rem(36px);
       height: rem(36px);
       margin-right: rem(8px);
     }
   }
+
   &-selected {
     opacity: 1;
   }

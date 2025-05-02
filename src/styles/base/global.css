@@ -6,6 +6,7 @@
 html,
 body {
   font-size: 16px;
+
   @media screen and (max-width: 1280px) {
     font-size: 12px;
   }
@@ -32,6 +33,7 @@ hr.solid {
 }
 
 .app {
+  height: 100vh;
   overflow-x: hidden;
   position: relative;
   /* min-height: 150vh; */
@@ -51,10 +53,11 @@ hr.solid {
   background-color: value($color-basic, brightest) !important;
   color: value($color-basic, dark) !important;
   border: 2px solid value($color-basic, bright) !important;
-  font-family: 'Lato-Regular' !important;
+  font-family: 'Expletus-Regular' !important;
   font-size: rem(18px);
   padding: rem(11px) rem(27px);
   margin-right: rem(20px);
+
   @media only screen and (max-width: $md) {
     position: absolute;
     bottom: -50px;
@@ -63,5 +66,33 @@ hr.solid {
   @media only screen and (max-width: $sm) {
     left: rem(20px);
     bottom: -20px;
+    font-size: 14px !important;
+    img {
+      width: 16px !important;
+    }
+  }
+}
+
+.sc-fHsOPI {
+  font-family: 'NotoSans' !important;
+
+  path {
+    fill: #9f8455 !important
+  }
+
+  .sc-jSMfEi {
+    background-color: white !important;
+    border: 1px solid #9f8455 !important;
+    border-radius: 10px !important;
+  }
+
+  .sc-iBkjds {
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+
+    svg,
+    path {
+      fill: white !important;
+    }
   }
 }

@@ -1,31 +1,63 @@
+body,
+html {
+  @media only screen and (max-width: 1400px) {
+    font-size: 12px;
+  }
+}
+
+.chain-loading {
+  margin-top: 20px;
+  margin-left: 3px;
+
+  span {
+    margin-left: 15px;
+  }
+}
+
 .network {
   min-height: rem(750px);
   margin-top: rem(50px);
+
   @media only screen and (max-width: $md) {
     min-height: rem(850px);
   }
+
   @media only screen and (max-width: $sm) {
     min-height: rem(900px);
   }
+
+  .next-btn {
+    @media only screen and (max-width: $sm) {
+      margin: 0 auto;
+      display: block;
+      width: 100px;
+    }
+  }
+
   &__content {
     position: relative;
     display: flex;
     align-items: flex-start;
+
     @media only screen and (max-width: $md) {
       align-items: flex-start;
     }
+
     @media only screen and (max-width: $sm) {
       display: block;
     }
+
     .previous_btn {
       display: flex;
       align-self: end;
     }
+
     &__steps {
       flex: 1;
       padding: rem(100px) rem(80px);
       padding-top: rem(0px);
       margin-bottom: rem(50px);
+
       @media only screen and (max-width: $sm) {
         padding: rem(100px) rem(20px);
         padding-top: rem(0px);
@@ -33,24 +65,29 @@
       }
 
       p {
-        font-family: 'Lato-Regular';
-        font-size: rem(23px);
+        font-family: 'NotoSans';
+        font-size: rem(19px);
         color: value($color-basic, dark);
-        letter-spacing: 0.5px;
+
         @media only screen and (max-width: $sm) {
           text-align: center;
         }
+
         strong {
-          font-family: 'Lato-Bold';
+          font-family: 'Expletus-Bold';
+          color: value($color-basic, bright);
+
           @media only screen and (max-width: $sm) {
             display: block;
           }
         }
       }
+
       h6 {
-        font-family: 'Lato-Regular';
+        font-family: 'NotoSans';
         font-size: rem(14px);
         color: value($color-basic, dark);
+
         @media only screen and (max-width: $sm) {
           text-align: center;
           font-size: rem(14px);
@@ -58,14 +95,17 @@
       }
     }
   }
+
   .tokenitem {
     padding-top: rem(30px);
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     img {
       width: rem(25px);
     }
+
     p {
       font-family: 'Lato-Regular';
       font-size: rem(16px);

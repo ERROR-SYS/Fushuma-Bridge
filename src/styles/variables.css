@@ -2,8 +2,8 @@ $default-font-size: 16px;
 
 $color-basic: (
   brightest: #ffffff,
-  brighter: #b1cc4e,
-  bright: #adca46,
+  brighter: #d9c6a5,
+  bright: #9f8455,
   normal: null,
   dark: #000000,
   darker: #b0b0b0,
@@ -11,8 +11,8 @@ $color-basic: (
 );
 
 $color-primary: (
-  normal: #7ea224,
-  border: rgba(#adca46, 0.22),
+  normal: #ce1f2e,
+  border: rgba(#ce1f2e, 0.22),
   scrolltrack: #edf3d6
 );
 

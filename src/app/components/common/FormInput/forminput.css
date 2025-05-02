@@ -1,9 +1,18 @@
 .forminput {
+  border: 2px solid #b3b3b37a;
+  padding: 3px 8px;
+  margin-bottom: 10px;
+  &:hover {
+    transition: all ease .3s;
+    border-color: #d9c6a5;
+  }
+  div {
+    margin-bottom: 0 !important;
+  }
   .form-control {
     border: none;
-    border-bottom: 2px solid value($color-basic, bright);
     background: transparent;
-    font-family: 'Lato-Regular';
+    font-family: 'NotoSans';
     font-size: rem(20px);
     border-radius: 0px;
     padding-left: 0px;
@@ -14,8 +23,7 @@
   .input-group-text {
     background-color: transparent !important;
     border: none;
-    border-bottom: 2px solid value($color-basic, bright);
-    font-family: 'Lato-Bold';
+    font-family: 'NotoSans';
     border-radius: 0px;
     font-size: rem(20px);
     padding-right: 0px;

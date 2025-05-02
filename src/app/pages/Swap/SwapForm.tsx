@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core';
 import { Field, Formik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import CustomCheckbox from '~/app/components/common/CustomCheckbox';
@@ -13,6 +13,10 @@ import useGetWalletState from '~/app/modules/wallet/hooks';
 import { escapeRegExp } from '~/app/utils';
 import { getBalanceAmount } from '~/app/utils/decimal';
 import SwapFooter from './SwapFooter';
+import { MIN_GAS_AMOUNT } from '~/app/constants';
+import { getBridgeAddress } from '~/app/utils/addressHelpers';
+import { getBridgeContract } from '~/app/utils';
+import { ethers } from 'ethers';
 import './swapform.css';
 
 type props = {
@@ -50,17 +54,21 @@ export default function SwapForm({
 }: props) {
   const [t] = useTranslation();
 
-  const [destination, setDestination] = useState(true);
-  const { chainId } = useWeb3React();
+  const [destination, setDestination] = useState(false);
+  const { chainId, account, library } = useWeb3React();
 
   const { selectedToken, fromNetwork, toNetwork } = useGetWalletState();
   const cloBalance = useGetCLOBalance(fromNetwork);
   const [swap_amount, setSwapAmount] = useState('');
   const [buy_amount, setBuyAmount] = useState('');
+  const [destinationError, setDestinationError] = useState(false);
+  const [gasNeeded, setGasNeeded] = useState(0);
+  const [totalReceived, setTotalReceived] = useState(0);
+  const [showFee, setShowFee] = useState(false);
 
   const amountsOut = useGetAmountsOut(swap_amount);
   const amountsIn = useGetAmountsInput(buy_amount);
-  const { toastError } = useToast();
+  const { toastError, toastInfo, toastWarning } = useToast();
 
   const intInputAmount = swap_amount === '' ? 0 : parseFloat(swap_amount);
   const intOutputAmount = buy_amount === '' ? 0 : parseFloat(buy_amount);
@@ -80,14 +88,82 @@ export default function SwapForm({
     setDestination(status);
   };
 
+  useEffect(() => {
+    if (selectedToken && swap_amount) {
+      getTokenFees();
+    }
+  }, [selectedToken, swap_amount]);
+
+  useEffect(() => {
+    if (Number(swap_amount) !== totalReceived) {
+      setShowFee(true);
+    } else {
+      setShowFee(false);
+    }
+  }, [totalReceived]);
+
+  useEffect(() => {
+    if (destinationError) {
+      setTimeout(() => {
+        setDestinationError(false);
+      }, 2500);
+    }
+  }, [destinationError]);
+
+  useEffect(() => {
+    switch (chainId) {
+      case 121224:
+        setGasNeeded(MIN_GAS_AMOUNT[121224]);
+        break;
+      default:
+        setGasNeeded(0.005);
+        break;
+    }
+  }, [chainId, MIN_GAS_AMOUNT]);
+
+  const getTokenFees = async () => {
+    const bridgeAddr = getBridgeAddress(fromNetwork.chainId);
+    const bridgeContract = getBridgeContract(bridgeAddr, library, account);
+    const fetchedFee = await bridgeContract.getBridgeFee(selectedToken.address[fromNetwork.chainId]);
+    const feeValue = ethers.BigNumber.from(fetchedFee).toNumber();
+    const fee = (Number(swap_amount) * feeValue) / 1000000;
+    const totalSwap = Number(swap_amount) - fee;
+    setTotalReceived(totalSwap);
+  };
+
   const onSubmit = (values: any) => {
-    submit({
-      ...values,
-      swap_amount,
-      buy_amount,
-      amountsIn,
-      amountsOut
-    });
+    if (destination) {
+      if (
+        values.destination_wallet &&
+        values.destination_wallet.startsWith('0x') &&
+        values.destination_wallet.length === 42
+      ) {
+        submit({
+          ...values,
+          swap_amount,
+          buy_amount,
+          amountsIn,
+          amountsOut
+        });
+      } else if (
+        values.destination_wallet &&
+        !values.destination_wallet.startsWith('0x') &&
+        values.destination_wallet.length !== 42
+      ) {
+        setDestinationError(true);
+      } else if (!values.destination) {
+        setDestinationError(true);
+      }
+    } else {
+      values.destination_wallet = account;
+      submit({
+        ...values,
+        swap_amount,
+        buy_amount,
+        amountsIn,
+        amountsOut
+      });
+    }
   };
 
   const handleSwapAmount = (e: any) => {
@@ -110,9 +186,22 @@ export default function SwapForm({
   };
 
   const handleMaxInput = () => {
-    selectedToken.symbol === fromNetwork.symbol
-      ? setSwapAmount((Number(tokenBalance) - 0.005).toString())
-      : setSwapAmount((Number(tokenBalance) - 0.0000001).toString());
+    if (selectedToken.symbol === fromNetwork.symbol && !selectedToken.isCustom) {
+      if (Number(tokenBalance) - gasNeeded >= 0) {
+        setSwapAmount((Number(tokenBalance) - gasNeeded).toString());
+        toastInfo(`'Max' Button deduces ${gasNeeded} for gas fees.`);
+      } else {
+        setSwapAmount('0');
+        toastWarning(`Insufficient ${selectedToken.symbol} for gas fees.`);
+      }
+    } else {
+      if (Number(tokenBalance) - 0.0000001 >= 0) {
+        setSwapAmount(Number(tokenBalance).toString());
+      } else {
+        setSwapAmount('0');
+        toastWarning(`Insufficient ${selectedToken.symbol} balance.`);
+      }
+    }
   };
 
   return (
@@ -135,9 +224,9 @@ export default function SwapForm({
               <div className="row">
                 <div className="col">
                   <div className="row mt-3 swapform__row">
-                    <div className="col">
+                    <div className="col swapform_amount">
                       <div className="justify-content-between swapform__label">
-                        <label htmlFor="swap_amount">{t('Amount to transfer')} </label>
+                        <label htmlFor="swap_amount">{t('Amount To Transfer')} </label>
                         <div className="swapform__max-button" onClick={handleMaxInput}>
                           {t('MAX')}
                         </div>
@@ -156,10 +245,13 @@ export default function SwapForm({
                         maxLength={79}
                         spellCheck="false"
                         onChange={handleSwapAmount}
+                        placeholder={'1'}
                       />
-                      <div className="d-flex justify-content-between">
-                        <p className="swapform__subtext">{t('Amount')}</p>
-                      </div>
+                      {showFee && (
+                        <i>
+                          <strong>Note:</strong> After fees, you will receive {totalReceived} {selectedToken.symbol}.
+                        </i>
+                      )}
                     </div>
                   </div>
                   {disable && (
@@ -210,10 +302,10 @@ export default function SwapForm({
                     </>
                   )}
 
-                  <div className="row mt-5 swapform__row">
+                  <div className="row mt-3 swapform__row">
                     <div className="col">
                       <CustomCheckbox
-                        label={t('Specific destination wallet')}
+                        label={t('Specify Destination Wallet')}
                         checked={destination}
                         onChangeCheckbox={onChangeDestination}
                       />
@@ -221,14 +313,18 @@ export default function SwapForm({
                   </div>
 
                   <div className="row mt-3 swapform__row">
-                    <div className="col">
+                    <div className="col destination-input-container">
                       {destination && (
                         <Field
                           name="destination_wallet"
                           className="form-control swapform__destinationinput"
                           type={'text'}
                           component={FormInput}
+                          placeholder={'0x'}
                         />
+                      )}
+                      {destinationError && destination && (
+                        <span style={{ color: '#ce1f2e' }}>Invalid destination address.</span>
                       )}
                     </div>
                   </div>
@@ -238,11 +334,13 @@ export default function SwapForm({
                     color="success"
                     className="swapform__submit"
                     disabled={
-                      swap_amount === '0' ||
+                      Number(swap_amount) === 0 ||
                       swap_amount === '' ||
-                      values.destination_wallet === '' ||
                       pending ||
-                      (cloBalance === 0 && chainId === 820)
+                      (destination && !values.destination_wallet) ||
+                      (destination &&
+                        values.destination_wallet &&
+                        (!values.destination_wallet.startsWith('0x') || values.destination_wallet.length !== 42))
                     }
                   >
                     {pending ? (

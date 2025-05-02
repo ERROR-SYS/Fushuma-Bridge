@@ -16,7 +16,7 @@ import { PairState, usePairs } from './usePairs';
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency, chain?: number): Pair[] {
   // const { chainId } = useActiveWeb3React();
-  const chainId = chain ? chain : 820;
+  const chainId = chain ? chain : 121224;
 
   const [tokenA, tokenB] = chainId
     ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
@@ -41,31 +41,31 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency, chain?: n
     () =>
       tokenA && tokenB
         ? [
-            // the direct pair
-            [tokenA, tokenB],
-            // token A against all bases
-            ...bases.map((base): [Token, Token] => [tokenA, base]),
-            // token B against all bases
-            ...bases.map((base): [Token, Token] => [tokenB, base]),
-            // each base against all bases
-            ...basePairs
-          ]
-            .filter((tokens): tokens is [Token, Token] => Boolean(tokens[0] && tokens[1]))
-            .filter(([t0, t1]) => t0.address !== t1.address)
-            .filter(([tokenA_, tokenB_]) => {
-              if (!chainId) return true;
-              const customBases = CUSTOM_BASES[chainId];
+          // the direct pair
+          [tokenA, tokenB],
+          // token A against all bases
+          ...bases.map((base): [Token, Token] => [tokenA, base]),
+          // token B against all bases
+          ...bases.map((base): [Token, Token] => [tokenB, base]),
+          // each base against all bases
+          ...basePairs
+        ]
+          .filter((tokens): tokens is [Token, Token] => Boolean(tokens[0] && tokens[1]))
+          .filter(([t0, t1]) => t0.address !== t1.address)
+          .filter(([tokenA_, tokenB_]) => {
+            if (!chainId) return true;
+            const customBases = CUSTOM_BASES[chainId];
 
-              const customBasesA: Token[] | undefined = customBases?.[tokenA_.address];
-              const customBasesB: Token[] | undefined = customBases?.[tokenB_.address];
+            const customBasesA: Token[] | undefined = customBases?.[tokenA_.address];
+            const customBasesB: Token[] | undefined = customBases?.[tokenB_.address];
 
-              if (!customBasesA && !customBasesB) return true;
+            if (!customBasesA && !customBasesB) return true;
 
-              if (customBasesA && !customBasesA.find((base) => tokenB_.equals(base))) return false;
-              if (customBasesB && !customBasesB.find((base) => tokenA_.equals(base))) return false;
+            if (customBasesA && !customBasesA.find((base) => tokenB_.equals(base))) return false;
+            if (customBasesB && !customBasesB.find((base) => tokenA_.equals(base))) return false;
 
-              return true;
-            })
+            return true;
+          })
         : [],
     [tokenA, tokenB, bases, basePairs, chainId]
   );

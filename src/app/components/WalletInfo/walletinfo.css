@@ -3,15 +3,18 @@
     padding: rem(38px) rem(14px);
     text-align: center;
     min-width: rem(280px);
+
     p {
       font-size: 15px;
     }
+
     &--title {
       margin-top: rem(45px);
       font-family: 'Lato-Bold';
       font-size: rem(20px);
       color: value($color-basic, dark);
     }
+
     &--disconnect {
       margin-top: rem(30px);
       font-family: 'Lato-Bold';
@@ -19,40 +22,45 @@
       color: value($color-basic, dark);
       text-transform: uppercase;
       cursor: pointer;
+
       &:hover {
         opacity: 0.8;
       }
     }
   }
+
   &__addtoken--button {
     border: none;
     background: transparent;
     width: 30px;
     margin-left: 10px;
   }
+
   &__copyicon {
     cursor: pointer;
   }
 }
+
 .tokens_container {
   max-height: 300px;
   overflow-y: scroll;
 }
+
 .tokens_container::-webkit-scrollbar {
   border-radius: 5px;
   width: 10px !important;
 }
+
 .tokens_container::-webkit-scrollbar-thumb {
   background-color: rgba(126, 162, 36, 0.73);
   border-radius: 5px;
 }
+
 .token-icon {
   width: 24px;
   height: 24px;
 }
+
 .justify-center {
   justify-content: center;
-}
-.me-copied {
-  color: rgba(126, 162, 36, 1);
 }

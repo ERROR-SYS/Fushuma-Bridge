@@ -1,7 +1,11 @@
 import classNames from 'classnames';
 import { Radio, RadioGroup } from 'react-custom-radio-buttons';
 import { getTokenLogoLink } from '~/app/utils/getImageUrl';
+import { useSelector } from 'react-redux';
+import { AppState } from '~/app/core/store';
 import './tokenselection.css';
+import { useState } from 'react';
+import { IToken } from '~/app/constants/interface';
 
 type props = {
   options: Array<any>;
@@ -11,9 +15,22 @@ type props = {
 };
 
 export default function TokenSelection({ options, fromNetwork, className, onChange }: props) {
+  console.log(options);
+  const { balance } = useSelector((state: AppState) => state.walletBridge);
+  const [currentToken, setCurrentToken] = useState<IToken>();
+
+  const clickEvent = (option: IToken) => {
+    setCurrentToken(option);
+    onChange(option);
+  };
+
+  const returnNull = () => {
+    return;
+  };
+
   return (
     <div className="tokenselection">
-      <RadioGroup containerStyle={classNames('tokenselection-container', className)} onChange={onChange}>
+      <RadioGroup containerStyle={classNames('tokenselection-container', className)} onChange={returnNull}>
         {options.map((option, index) => (
           <Radio
             key={`${option.address}-${index}`}
@@ -21,18 +38,17 @@ export default function TokenSelection({ options, fromNetwork, className, onChan
             render={({ isSelected }: any) => (
               <button
                 className={classNames('tokenselection-option', {
-                  'tokenselection-selected': isSelected
+                  'tokenselection-selected': currentToken === option
                 })}
+                onClick={() => clickEvent(option)}
               >
                 <div>
-                  <img
-                    className="tokenselection-logo"
-                    src={
-                      option.symbol === 'BUSDT' && fromNetwork.chainId !== '820' ? 'images/usdt.png' : option.logoURI
-                    }
-                    alt="icon"
-                  />
-                  {option.symbol === 'BUSDT' ? (fromNetwork.chainId === '820' ? 'BUSDT' : 'USDT') : option.symbol}
+                  <img className="tokenselection-logo" src={option.logoURI} alt="icon" />
+                  {option.symbol}
+                  <p>
+                    <b>Balance: </b>
+                    {Math.floor(balance[`${option.symbol}`] * 100000) / 100000}
+                  </p>
                 </div>
               </button>
             )}
@@ -61,14 +77,10 @@ export const TokenSelection2 = ({ options, fromNetwork, className, onChange }: p
                 <div>
                   <img
                     className="tokenselection-logo"
-                    src={
-                      option.symbol === 'BUSDT' && fromNetwork.chainId !== '820'
-                        ? 'images/usdt.png'
-                        : getTokenLogoLink(option.address, option.chainId)
-                    }
+                    src={getTokenLogoLink(option.address, option.chainId)}
                     alt="icon"
                   />
-                  {option.symbol === 'BUSDT' ? (fromNetwork.chainId === '820' ? 'BUSDT' : 'USDT') : option.symbol}
+                  {option.symbol}
                 </div>
                 {`(${option.network})`}
               </button>

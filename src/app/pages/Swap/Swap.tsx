@@ -1,14 +1,15 @@
 import { Token } from '@callisto-enterprise/soy-sdk';
 import BigNumber from 'bignumber.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 // import { toast } from 'react-toastify';
 import BorderContainer from '~/app/components/common/BorderContainer';
 import CustomButton from '~/app/components/common/CustomButton';
-import Notice from '~/app/components/Notice';
-import WalletInfo from '~/app/components/WalletInfo';
+import { getSignaturesAddWrapped, requiredSignatures } from '~/app/utils/getSignatures';
+import { getBridgeAddress } from '~/app/utils/addressHelpers';
+import { getBridgeContract } from '~/app/utils';
 import { blockConfirmations } from '~/app/constants/config';
 import { NATIVE_W_COINS } from '~/app/constants/tokens';
 import useActiveWeb3React from '~/app/hooks/useActiveWeb3React';
@@ -17,6 +18,11 @@ import useGetAllowance from '~/app/hooks/useGetAllowance';
 import useGetWeb3 from '~/app/hooks/useGetWeb3';
 import useSwap from '~/app/hooks/useSwap';
 import useToast from '~/app/hooks/useToast';
+import getNativeTokenABI from '~/app/constants/abis/getNativeToken.json';
+import { setSelectedToken } from '~/app/modules/wallet/action';
+import getWrappedTokenABI from '~/app/constants/abis/getWrappedToken.json';
+import { MIN_GAS_AMOUNT } from '~/app/constants';
+import { ethers } from 'ethers';
 import {
   setConfirmedBlockCounts,
   setDestinationAddress,
@@ -32,9 +38,10 @@ import previousIcon from '~/assets/images/previous.svg';
 import Claim from './Claim';
 import './swap.css';
 import SwapForm from './SwapForm';
+import { useGetTokenBalance } from '~/app/hooks/wallet';
 
 const Swap = () => {
-  const { account, library } = useActiveWeb3React();
+  const { account, library, chainId } = useActiveWeb3React();
   const [t] = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,23 +50,36 @@ const Swap = () => {
   const [canBuyCLO, setCanBuyCLO] = useState(false);
   const [txBlockNumber, setTxBlockNumber] = useState(0);
   const [switched, setSwitched] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
+  const [addingToken, setAddingToken] = useState(false);
+  const [addingBridge, setAddingBridge] = useState(false);
+  const [originalToken, setOriginalToken] = useState<any>();
+  const [transfering, setTransfering] = useState(false);
 
   const { balance, selectedToken, fromNetwork, toNetwork } = useGetWalletState();
   const swapTokenAddr = selectedToken?.address[`${fromNetwork.chainId}`];
   const swapTokenAddrInCallisto = selectedToken?.address[`${toNetwork.chainId}`];
   const wAddr = NATIVE_W_COINS[`${toNetwork.chainId}`];
 
-  const { onApprove, allowed } = useGetAllowance(swapTokenAddr, succeed);
+  const { onApprove, allowed } = useGetAllowance(swapTokenAddr, succeed, fromNetwork.chainId);
   const { onAdvancedSwap, onSimpleSwap } = useSwap();
   const web3 = useGetWeb3(fromNetwork?.rpcs[0]);
   const deadline = useCurrentBlockTimestamp();
 
   const [claimAddress, setClaimAddress] = useState('');
   const { toastError, toastWarning } = useToast();
-  const tokenBalance = balance[`${selectedToken.symbol}`];
-  const disable =
-    (selectedToken.symbol !== 'CLO' && toNetwork.chainId === '820') ||
-    (selectedToken.symbol !== 'BTT' && toNetwork.chainId === '199');
+  const [tokenBalance, setTokenBalance] = useState();
+  const [waitingNetworkSwitch, setWaitingNetworkSwitch] = useState(false);
+  const [waitingNetworkSwitchBack, setWaitingNetworkSwitchBack] = useState(false);
+  const [swapCustomInfo, setSwapCustomInfo] = useState<any>();
+  const swapCustomInfoRef = useRef(swapCustomInfo);
+
+  const pendingBalance = useGetTokenBalance(fromNetwork, selectedToken, chainId);
+
+  // const disable =
+  //   (selectedToken.symbol !== 'CLO' && toNetwork.chainId === '820') ||
+  //   (selectedToken.symbol !== 'BTT' && toNetwork.chainId === '199');
+  const disable = false;
 
   const inputCurrency =
     swapTokenAddrInCallisto === ''
@@ -72,16 +92,27 @@ const Swap = () => {
           selectedToken?.name
         );
 
-  const outputCurrency =
-    wAddr === ''
-      ? undefined
-      : new Token(
-          Number(toNetwork.chainId),
-          wAddr,
-          18,
-          toNetwork.chainId === '820' ? 'WCLO' : 'BTT',
-          toNetwork.chainId === '820' ? 'Wrapped CLO' : 'Wrapped BTT'
-        );
+  // const outputCurrency =
+  //   wAddr === ''
+  //     ? undefined
+  //     : new Token(
+  //         Number(toNetwork.chainId),
+  //         wAddr,
+  //         18,
+  //         toNetwork.chainId === '820' ? 'WCLO' : 'BTT',
+  //         toNetwork.chainId === '820' ? 'Wrapped CLO' : 'Wrapped BTT'
+  //       );
+
+  const outputCurrency: any = undefined;
+
+  useEffect(() => {
+    if (chainId == fromNetwork.chainId && waitingNetworkSwitchBack) {
+      setWaitingNetworkSwitchBack(false);
+      swapCustomToken();
+    } else if (chainId == toNetwork.chainId && waitingNetworkSwitch) {
+      addWrappedTokenFunction();
+    }
+  }, [library]);
 
   const onPrevious = () => {
     navigate('/tokens');
@@ -90,6 +121,10 @@ const Swap = () => {
   useEffect(() => {
     dispatch(setStartSwapping(false));
   }, [dispatch]);
+
+  useEffect(() => {
+    setTokenBalance(balance[`${selectedToken.symbol}`]);
+  }, [pendingBalance]);
 
   useEffect(() => {
     const getCurrentBlock = () => {
@@ -109,23 +144,51 @@ const Swap = () => {
         }
       }, 1000);
     };
-    if (txBlockNumber !== 0 && pending) {
+    if (txBlockNumber !== 0 && pending && !addingToken && !addingBridge) {
       getCurrentBlock();
     }
   }, [dispatch, txBlockNumber, pending, library, toNetwork, web3, fromNetwork]);
 
   const onSubmit = (values: any) => {
-    let neededTokenBalance = Number(tokenBalance);
-    if (selectedToken.symbol === fromNetwork.symbol) {
-      neededTokenBalance += 0.005;
+    const currentBalance = Number(tokenBalance);
+    let minGasFees;
+
+    // switch (chainId) {
+    //   case 121224:
+    //     minGasFees = MIN_GAS_AMOUNT[121224];
+    //     break;
+    //   default:
+    //     minGasFees = 0.005;
+    // }
+
+    if (MIN_GAS_AMOUNT[chainId as keyof typeof MIN_GAS_AMOUNT]) {
+      minGasFees = MIN_GAS_AMOUNT[chainId as keyof typeof MIN_GAS_AMOUNT];
+    } else {
+      minGasFees = 0.001; // Default value if chainId is not found in MIN_GAS_AMOUNT
     }
 
-    if (Number(values.swap_amount) > neededTokenBalance) {
-      toastWarning('WARNING!', 'Inssuficient token balance!');
+    // Check selected token balance
+    if (!selectedToken.isCustom) {
+      if (selectedToken.symbol === fromNetwork.symbol && currentBalance < Number(values.swap_amount) + minGasFees) {
+        if (currentBalance < Number(values.swap_amount)) {
+          toastWarning('WARNING!', `Insufficient ${selectedToken.symbol} balance.`);
+          return;
+        } else {
+          toastWarning('WARNING!', `Insufficient ${selectedToken.symbol} for gas fees.`);
+          return;
+        }
+      } else if (selectedToken.symbol !== fromNetwork.symbol && currentBalance < Number(values.swap_amount)) {
+        toastWarning('WARNING!', `Insufficient ${selectedToken.symbol} balance.`);
+        return;
+      }
+    } else if (currentBalance < Number(values.swap_amount)) {
+      toastWarning('WARNING!', `Insufficient ${selectedToken.symbol} balance.`);
       return;
     }
-    if (Number(balance[`${fromNetwork.symbol}`]) < 0.005) {
-      toastWarning('WARNING!', `Inssuficient ${fromNetwork.symbol} balance!`);
+
+    // Check network fees balance
+    if (Number(balance[`${fromNetwork.symbol}`]) < minGasFees) {
+      toastWarning('WARNING!', `Insufficient ${fromNetwork.symbol} for gas fees.`);
       return;
     }
     if (canBuyCLO) {
@@ -168,7 +231,10 @@ const Swap = () => {
       value = bigAmount.toString();
     } else {
       if (bigAmount.gt(allowed)) {
+        setPending(true);
+        setIsApproving(true);
         await onApprove();
+        setIsApproving(false);
       }
     }
 
@@ -209,8 +275,160 @@ const Swap = () => {
     }
   }
 
+  const addTokenFunction = async () => {
+    const bridgeAddr = await getBridgeAddress(chainId);
+    const bridgeContract = await getBridgeContract(bridgeAddr, library, account);
+    const signer = await library.getSigner(account);
+    const getTokenContract = await new ethers.Contract(bridgeAddr, getNativeTokenABI, signer);
+
+    const isTokenAdded = await getTokenContract.getToken(selectedToken.address[fromNetwork.chainId]);
+    const chainIdFromData = ethers.BigNumber.from(isTokenAdded[1]).toNumber();
+    const value = '0';
+    let addTokenTx;
+
+    if (!chainIdFromData) {
+      setAddingToken(true);
+      try {
+        const addTokenGas = await bridgeContract.estimateGas.addToken(selectedToken.address[fromNetwork.chainId], {
+          value
+        });
+        addTokenTx = await bridgeContract.addToken(selectedToken.address[fromNetwork.chainId], {
+          value,
+          gasLimit: addTokenGas.add(30000)
+        });
+        const original = {
+          address: selectedToken.address[fromNetwork.chainId],
+          chainId: Number(fromNetwork.chainId)
+        };
+        setOriginalToken(original);
+      } catch (e: any) {
+        setPending(false);
+        if (e.code === 4001) {
+          toastError('You declined the transaction.');
+        } else {
+          toastError('An error occured, please try again later.');
+        }
+      }
+      await addTokenTx.wait();
+      return addTokenTx;
+    } else {
+      const original = {
+        address: isTokenAdded[0],
+        chainId: chainIdFromData
+      };
+      setOriginalToken(original);
+      if (isTokenAdded[0] !== selectedToken.address[fromNetwork.chainId]) {
+        const token = { ...selectedToken };
+        token.toAddress = isTokenAdded[0];
+        dispatch(setSelectedToken(token));
+      }
+      return true;
+    }
+  };
+
+  const addWrappedTokenResultHandler = () => {
+    setAddingBridge(false);
+    setWaitingNetworkSwitchBack(true);
+    switchNetwork(fromNetwork, library);
+  };
+
+  const addWrappedTokenFunction = async () => {
+    if (originalToken) {
+      setWaitingNetworkSwitch(false);
+      const bridgeAddr = await getBridgeAddress(chainId);
+      const bridgeContract = await getBridgeContract(bridgeAddr, library, account);
+      const signer = await library.getSigner(account);
+      const getTokenContract = await new ethers.Contract(bridgeAddr, getWrappedTokenABI, signer);
+
+      const isTokenAdded = await getTokenContract.getToken(originalToken.address, originalToken.chainId);
+      const chainIdFromData = ethers.BigNumber.from(isTokenAdded[1]).toNumber();
+
+      if (chainIdFromData) {
+        if (
+          isTokenAdded[2] !== selectedToken.address[fromNetwork.chainId] &&
+          isTokenAdded[2] !== '0x0000000000000000000000000000000000000000'
+        ) {
+          const token = { ...selectedToken };
+          token.toAddress = isTokenAdded[2];
+          dispatch(setSelectedToken(token));
+        }
+        addWrappedTokenResultHandler();
+        return true;
+      } else {
+        setAddingBridge(true);
+        const { signatures } = await getSignaturesAddWrapped(
+          selectedToken.address[fromNetwork.chainId],
+          fromNetwork.chainId
+        );
+        if (signatures.length !== requiredSignatures) {
+          toastError('Failed to fetch signatures.');
+          setPending(false);
+          return { status: false, hash: null } as any;
+        }
+        const value = '0';
+        let addWrappedTx;
+        try {
+          const addWrappedGasLimit = await bridgeContract.estimateGas.addWrappedToken(
+            selectedToken.address[toNetwork.chainId],
+            fromNetwork.chainId,
+            selectedToken.decimals[toNetwork.chainId],
+            selectedToken.name,
+            selectedToken.symbol,
+            signatures,
+            { value }
+          );
+          addWrappedTx = await bridgeContract.addWrappedToken(
+            selectedToken.address[toNetwork.chainId],
+            fromNetwork.chainId,
+            selectedToken.decimals[toNetwork.chainId],
+            selectedToken.name,
+            selectedToken.symbol,
+            signatures,
+            {
+              value,
+              gasLimit: addWrappedGasLimit.add(30000)
+            }
+          );
+          const isTokenAdded = await getTokenContract.getToken(originalToken.address, originalToken.chainId);
+          const token = { ...selectedToken };
+          token.toAddress = isTokenAdded[2];
+          dispatch(setSelectedToken(token));
+        } catch (e: any) {
+          setPending(false);
+          if (e.code === 4001) {
+            toastError('You declined the transaction.');
+          } else {
+            toastError('An error occured, please try again later.');
+          }
+        }
+        addWrappedTx.wait();
+        addWrappedTokenResultHandler();
+        return addWrappedTx;
+      }
+    }
+  };
+
+  const swapCustomToken = async () => {
+    const { address, bigAmount, value } = swapCustomInfoRef.current;
+    try {
+      const tx = await onSimpleSwap(address, swapTokenAddr, bigAmount, toNetwork.chainId, value);
+      if (tx.hash) {
+        await handleSetPending(tx.hash, address);
+      }
+    } catch (e: any) {
+      setPending(false);
+      if (!e.message.includes('hash')) {
+        toastError('An error occured, please try again later.');
+      }
+    }
+  };
+
+  const updateSwapInfo = (newInfo: any) => {
+    swapCustomInfoRef.current = newInfo; // Updates instantly
+    setSwapCustomInfo({ ...newInfo }); // Triggers a re-render
+  };
+
   async function onClickSwap(amount: any, distinationAddress: string) {
-    setPending(true);
     const address: any = distinationAddress === '' ? account : distinationAddress;
     setClaimAddress(address);
 
@@ -223,12 +441,15 @@ const Swap = () => {
       toastError('Please select another asset. Current asset is not supported yet!');
     } else {
       let value = '0';
-      if (swapTokenAddr.slice(0, -2) === '0x00000000000000000000000000000000000000') {
+      if (swapTokenAddr.slice(0, -2) === '0x00000000000000000000000000000000000000' && !selectedToken.isCustom) {
         value = bigAmount.toString();
       } else {
         if (bigAmount.gt(allowed)) {
           try {
+            setPending(true);
+            setIsApproving(true);
             await onApprove();
+            setIsApproving(false);
           } catch (err) {
             setPending(false);
             setSucced(false);
@@ -238,20 +459,47 @@ const Swap = () => {
       }
 
       try {
-        const tx = await onSimpleSwap(address, swapTokenAddr, bigAmount, toNetwork.chainId, value);
-        if (tx.hash) {
-          await handleSetPending(tx.hash, address);
+        setPending(true);
+        if (!selectedToken.isCustom) {
+          setPending(true);
+          const tx = await onSimpleSwap(address, swapTokenAddr, bigAmount, toNetwork.chainId, value);
+          console.log(tx);
+          if (tx.hash) {
+            await handleSetPending(tx.hash, address);
+          }
+        } else {
+          if (fromNetwork.chainId == chainId) {
+            const swapInfo = {
+              address: address,
+              bigAmount: bigAmount,
+              value: value
+            };
+            updateSwapInfo(swapInfo);
+            // Add the token if its not added already
+            await addTokenFunction();
+            setAddingToken(false);
+            // Add the wrapped version of the token if not added already
+            setWaitingNetworkSwitch(true);
+            await switchNetwork(toNetwork, library);
+          }
         }
       } catch (error: any) {
-        toastError('Execution reverted: There is no pair!');
-        setPending(false);
-        setSucced(false);
-        dispatch(setStartSwapping(false));
+        if (error.message.includes('hash')) {
+          setPending(false);
+          setSucced(false);
+          dispatch(setStartSwapping(false));
+        } else {
+          toastError('Execution reverted: There is no pair!');
+          setPending(false);
+          setSucced(false);
+          dispatch(setStartSwapping(false));
+        }
       }
     }
   }
 
   const handleSetPending = async (hash: string, toAddr: string) => {
+    setTransfering(true);
     dispatch(setStartSwapping(true));
     const lastBlock = await web3.eth.getBlockNumber();
     setTxBlockNumber(lastBlock);
@@ -269,18 +517,15 @@ const Swap = () => {
           address={claim_address}
           totalBlockCounts={switched ? 1 : blockConfirmations[fromNetwork.chainId]}
           web3={web3}
+          isApproving={isApproving}
+          isAdding={addingToken}
+          isCreating={addingBridge}
+          isTransfering={transfering}
         />
       ) : (
         <div className="swap container">
           <div className="swap__content">
-            <CustomButton className="previous_btn" onClick={onPrevious}>
-              <div>
-                <img src={previousIcon} alt="previousIcon" className="me-2" />
-                {t('Previous')}
-              </div>
-            </CustomButton>
             <div className="swap__content--mainboard">
-              <WalletInfo fromNetwork={fromNetwork} />
               <div className="swap__content__steps">
                 <BorderContainer className="swap__content__bordercontainer">
                   <div>
@@ -302,7 +547,12 @@ const Swap = () => {
                 </BorderContainer>
               </div>
             </div>
-            {parseInt(balance.clo) === 0 && <Notice />}
+            <CustomButton className="previous_btn" onClick={onPrevious}>
+              <div>
+                <img src={previousIcon} alt="previousIcon" className="me-2" />
+                {t('Previous')}
+              </div>
+            </CustomButton>
           </div>
         </div>
       )}

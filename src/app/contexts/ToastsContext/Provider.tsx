@@ -49,7 +49,7 @@ export const ToastsProvider: React.FC<{ children: any }> = ({ children }) => {
 
   return (
     <ToastsContext.Provider value={{ toasts, clear, remove, toastError, toastInfo, toastSuccess, toastWarning }}>
-      {children}
+      <div className="toasts-container">{children}</div>
     </ToastsContext.Provider>
   );
 };

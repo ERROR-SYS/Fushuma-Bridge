@@ -104,7 +104,7 @@ export default function WalletInfo({ pending, fromNetwork }: walletInfoProps) {
                         <img
                           className="me-2 token-icon"
                           src={
-                            item.symbol === 'BUSDT' && fromNetwork.chainId !== '820' ? 'images/usdt.png' : item.logoURI
+                            item.symbol === 'USDT' && fromNetwork.chainId === '8453' ? 'images/usdc.png' : item.logoURI
                           }
                           alt="icon"
                         />
@@ -114,7 +114,7 @@ export default function WalletInfo({ pending, fromNetwork }: walletInfoProps) {
                         </button>
                       </div>
                       <p style={{ marginRight: 10 }}>
-                        {item.symbol === 'BUSDT' ? (fromNetwork.chainId === '820' ? 'BUSDT' : 'USDT') : item.symbol}
+                        {item.symbol === 'USDT' ? (fromNetwork.chainId === '8453' ? 'USDC' : 'USDT') : item.symbol}
                       </p>
                     </li>
                   );

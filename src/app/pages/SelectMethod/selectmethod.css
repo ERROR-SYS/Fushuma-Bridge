@@ -1,0 +1,225 @@
+html,
+body {
+  font-size: 16px;
+
+  @media only screen and (max-width: 1280px) {
+    font-size: 12px;
+  }
+}
+
+.home {
+  max-width: 1320px;
+  min-height: rem(750px);
+
+  @media only screen and (max-width: $md) {
+    min-height: rem(750px);
+  }
+
+  /* @media only screen and (max-width: $sm) {
+    min-height: rem(900px);
+  } */
+
+  &__title {
+    margin-top: rem(20px);
+    text-align: center;
+    font-family: 'Expletus-Bold';
+    font-size: calc(12px + 2vmin);
+    color: value($color-basic, dark);
+    text-transform: uppercase;
+  }
+
+  &__content {
+    margin-top: rem(25px);
+    display: flex;
+    justify-content: center;
+    padding-top: rem(82px);
+    padding-left: rem(80px);
+    padding-right: rem(100px);
+    padding-bottom: rem(40px);
+    background: url("../../../assets/images/homeBorder.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    @media only screen and (max-width: $md) {
+      background: url("../../../assets/images/MobileHomeBorder.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+
+    @media only screen and (max-width: 435px) {
+      background: none;
+    }
+
+    /* @media only screen and (max-width: 422px) {
+      background: none;
+    } */
+
+    @media only screen and (max-width: $sm) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .previous_btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    div {
+      display: flex;
+      gap: 5px;
+    }
+
+    @media only screen and (max-width: $md) {
+      transform: translate(-50%, -50%);
+      left: 50%;
+    }
+
+    @media only screen and (max-width: $sm) {
+      /* left: 1.25rem;
+      bottom: -20px; */
+      font-size: 17px !important;
+    }
+  }
+
+  .wallet-selected {
+    position: relative;
+
+    .container {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      width: max-content;
+
+      .bridge {
+        margin-bottom: 30px;
+      }
+
+      .home__claimbtnbox {
+        cursor: pointer;
+        position: relative;
+        transition: all ease .3s;
+
+        span {
+          position: absolute;
+          transform: translate(-50%, -50%);
+          top: 50%;
+          left: 50%;
+          font-size: 16px;
+          font-weight: 500;
+          width: max-content;
+        }
+
+        g {
+          fill: #d9c6a5;
+          transition: all ease .3s;
+        }
+
+        &:hover {
+          transition: all ease .3s;
+          transform: translateY(-5px);
+
+          g {
+            fill: #ce1f2e;
+            transition: all ease .3s;
+          }
+        }
+      }
+
+      .bridge {
+        height: 70px;
+        font-size: 15px;
+        margin-bottom: 20px;
+      }
+
+      .transaction {
+        height: 70px;
+        font-size: 15px;
+      }
+    }
+  }
+
+  &__wallets {
+    text-align: center;
+    margin-top: -18px;
+    margin-bottom: 68px;
+    margin-left: 70px;
+    width: 338px;
+    height: 386.5px;
+
+    @media only screen and (max-width: $md) {
+      margin-left: 15px;
+      margin-bottom: 45px;
+    }
+
+    @media only screen and (max-width: $sm) {
+      margin-left: 0;
+    }
+
+    &__title {
+      font-family: 'Expletus-Regular';
+      font-size: 23px;
+      color: value($color-basic, dark);
+      margin-top: 20px;
+      text-align: left;
+
+      @media only screen and (max-width: $md) {
+        text-align: center;
+      }
+    }
+  }
+
+  /* @media only screen and (max-width: $sm) {
+      font-size: rem(16px);
+      padding-top: rem(15px);
+      padding-bottom: rem(15px);
+    } */
+
+
+  &__animal {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media only screen and (max-width: $md) {
+      display: none;
+    }
+  }
+
+  &__help {
+    cursor: pointer;
+    position: absolute;
+    top: rem(40px);
+    right: rem(50px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform value($time, normal);
+
+    p {
+      font-family: 'NotoSans';
+      font-size: rem(18px);
+      line-height: rem(15px);
+      margin-left: rem(10px);
+    }
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    @media only screen and (max-width: $sm) {
+      /* bottom: rem(-50px); */
+      /* right: 0px;
+      top: rem(40px); */
+      /* margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      text-align: center; */
+    }
+  }
+}

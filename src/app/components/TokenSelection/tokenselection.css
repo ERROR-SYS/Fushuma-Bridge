@@ -1,28 +1,43 @@
 .tokenselection {
   margin-top: rem(20px);
+
   &-option {
-    /* width: 50px;
-    height: 50px; */
+    transition: all ease .2s;
+    width: 100%;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-right: rem(25px);
-    margin-top: rem(20px);
+    margin-top: 0.7rem;
     border: 2px solid value($color-basic, bright);
-    padding: rem(15px) rem(20px);
-    border-radius: rem(16px);
+    padding: 0.8375rem 0.6875rem;
+    border-radius: 0;
     opacity: 0.4;
-    font-family: 'Lato-Regular';
-    font-size: rem(18px);
+    font-family: 'NotoSans';
+    font-size: rem(16px);
     color: value($color-basic, dark);
-    img {
-      width: rem(36px);
-      height: rem(36px);
-      margin-right: rem(8px);
+    text-align: left;
+
+    div {
+      margin-left: -15px;
+      font-size: 15px;
+      margin-top: 2px;
+      img {
+        width: 1.90rem;
+        height: 1.90rem;
+        margin-right: rem(15px);
+      }
+      p {
+        display: inline;
+        float: right;
+        margin-top: 2px;
+        font-size: 15px;
+      }
     }
   }
+
   &-container {
     display: flex;
     flex-direction: row;
@@ -30,37 +45,44 @@
     align-content: flex-start;
     max-height: rem(300px);
     overflow-y: auto;
-    min-height: rem(300px);
-    @media only screen and (max-width: $sm) {
-      max-height: rem(500px);
-      min-height: rem(500px);
+
+    div {
+      width: 95%;
     }
+
+    @media only screen and (max-width: $sm) {
+      max-height: 15rem;
+    }
+
     &::-webkit-scrollbar {
-      width: rem(10px);
+      width: 7px;
     }
 
     /* Track */
     &::-webkit-scrollbar-track {
-      background: value($color-primary, scrolltrack);
-      border-radius: rem(15px);
-      border-left: 3px solid value($color-basic, brightest);
-      border-right: 3px solid value($color-basic, brightest);
+      background: #9f8455;
+      border-left: 3px solid #ffffff;
+      border-right: 3px solid #ffffff;
     }
 
     /* Handle */
     &::-webkit-scrollbar-thumb {
-      background: value($color-primary, normal);
-      border-radius: rem(15px);
+      transition: all ease .3s;
+      background: value($color-basic, brighter);
     }
 
     /* Handle on hover */
     &::-webkit-scrollbar-thumb:hover {
-      background: value($color-basic, brighter);
+      transition: all ease .3s;
+      background: value($color-basic, bright);
     }
   }
+
   &-selected {
+    transition: all ease .2s;
     opacity: 1;
   }
+
   &-logo {
     width: 30px;
     height: 30px;

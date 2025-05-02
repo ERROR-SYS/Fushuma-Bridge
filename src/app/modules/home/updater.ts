@@ -8,7 +8,7 @@ import { updateBlockNumber } from './action';
 
 export default function Updater(): null {
   // const { library, chainId } = useActiveWeb3React();
-  const chainId = localStorage.getItem('toChainId') ? Number(localStorage.getItem('toChainId')) : 820;
+  const chainId = localStorage.getItem('toChainId') ? Number(localStorage.getItem('toChainId')) : 121224;
   const provider = useRpcProvider([RPCs[`${chainId}`]]);
   const library = provider;
 

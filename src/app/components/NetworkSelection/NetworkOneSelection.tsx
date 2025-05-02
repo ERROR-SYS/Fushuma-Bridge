@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import React from 'react';
 import { Radio, RadioGroup } from 'react-custom-radio-buttons';
 import { INetwork } from '~/app/constants/interface';
 import './networkselection.css';
@@ -9,12 +8,23 @@ type props = {
   selected?: string;
   disabled?: string;
   onChange?: (option: INetwork) => void;
+  isChanging?: boolean;
 };
 
-export default function NetworkSelection({ options, selected, disabled, onChange }: props) {
+export default function NetworkSelection({ options, selected, disabled, onChange, isChanging }: props) {
+  const onClick = (option: any) => {
+    if (!isChanging && option.name !== selected) {
+      onChange(option);
+    }
+  };
+
+  const emptyFunction = () => {
+    return;
+  };
+
   return (
     <div className="networkselection">
-      <RadioGroup containerStyle={classNames('networkselection-container')} onChange={onChange}>
+      <RadioGroup containerStyle={classNames('networkselection-container')} onChange={emptyFunction}>
         {options.map((option, index) => (
           <Radio
             key={index}
@@ -22,8 +32,9 @@ export default function NetworkSelection({ options, selected, disabled, onChange
             render={({ isSelected }: any) => (
               <button
                 className={classNames('networkselection-option', {
-                  'networkselection-selected': isSelected || option.symbol === selected
+                  'networkselection-selected': option.name === selected
                 })}
+                onClick={() => onClick(option)}
               >
                 <div>
                   <img src={option.img} alt="icon" />
@@ -31,7 +42,7 @@ export default function NetworkSelection({ options, selected, disabled, onChange
                 </div>
               </button>
             )}
-            isDisabled={option.symbol === disabled}
+            isDisabled={option.name === disabled}
           />
         ))}
       </RadioGroup>

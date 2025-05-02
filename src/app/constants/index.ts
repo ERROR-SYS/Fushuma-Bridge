@@ -92,19 +92,21 @@ export const DEFAULT_GAS_LIMIT = 3000000;
 
 export const MIN_GAS_AMOUNT = {
   820: 1.0,
+  121224: 0.015,
   199: 100,
-  61: 0.01
+  1: 0.0002,
+  130: 0.000015
 };
 
 export const RPCs: { [chainId: number | string]: string } = {
-  '20729': '',
-  '820': process.env.REACT_APP_NODE_1,
   '56': process.env.REACT_APP_BSC_NODE_1,
-  '97': '',
   '1': process.env.REACT_APP_ETH_NODE_1,
-  '42': '',
   '61': process.env.REACT_APP_ETC_NODE_1,
-  '199': process.env.REACT_APP_BTT_NODE_1
+  '137': process.env.REACT_APP_POL_NODE_1,
+  '121224': process.env.REACT_APP_FUSHUMA_NODE_1,
+  '8453': process.env.REACT_APP_BASE_NODE_1,
+  '130': process.env.REACT_APP_UNICHAIN_NODE_1,
+  '42161': process.env.REACT_APP_ARBITRUM_NODE_1
 };
 
 export const prevChainIdKey = 'prevChainIdKey';

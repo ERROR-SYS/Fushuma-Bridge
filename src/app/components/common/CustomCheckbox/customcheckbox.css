@@ -11,7 +11,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    font-family: 'Lato-Bold';
+    font-family: 'NotoSans';
     font-size: rem(18px);
   }
 
@@ -21,6 +21,7 @@
     cursor: pointer;
     height: 0;
     width: 0;
+    transition: all ease .3s;
   }
 
   .checkmark {
@@ -31,13 +32,16 @@
     width: 25px;
     background-color: #eeeeee;
     border-radius: 100%;
+    transition: all ease .3s;
   }
 
   .container:hover input ~ .checkmark {
+    transition: all ease .3s;
     background-color: #cccccc;
   }
 
   .container input:checked ~ .checkmark {
+    transition: all ease .3s;
     background-color: value($color-primary, normal);
   }
 
@@ -45,6 +49,7 @@
     content: '';
     position: absolute;
     display: none;
+    transition: all ease .3s;
   }
 
   .container input:checked ~ .checkmark:after {
@@ -52,8 +57,9 @@
   }
 
   .container .checkmark:after {
-    left: 10px;
-    top: 5px;
+    transition: all ease .3s;
+    left: 8.5px;
+    top: 4px;
     width: 7px;
     height: 13px;
     border: solid #ffffff;

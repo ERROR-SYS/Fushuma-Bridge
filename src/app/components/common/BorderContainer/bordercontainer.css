@@ -8,7 +8,8 @@ $width: normal;
 .bordercontainer {
   position: relative;
   border: 2px solid rgba(value($color-basic, bright), 0.22);
-  border-radius: rem(27px);
+  border-radius: rem(10px);
+
   &--noborder {
     @media only screen and (max-width: $sm) {
       border: none;

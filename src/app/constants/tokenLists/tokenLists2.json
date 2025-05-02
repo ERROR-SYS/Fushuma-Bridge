@@ -1,654 +1,152 @@
 {
   "tokens": [
     {
-      "name": "Callisto Coin",
-      "symbol": "CLO",
+      "name": "Fushuma Coin",
+      "symbol": "FUMA",
       "address": {
-        "20729": "0x0000000000000000000000000000000000000001",
-        "820": "0x0000000000000000000000000000000000000001",
-        "56": "0xCcbf1C9E8b4f2cDF3Bfba1098b8f56f97d219D53",
-        "97": "",
-        "1": "0xCcbf1C9E8b4f2cDF3Bfba1098b8f56f97d219D53",
-        "42": "",
-        "61": "0xCcbf1C9E8b4f2cDF3Bfba1098b8f56f97d219D53",
-        "199": "0xCcbf1C9E8b4f2cDF3Bfba1098b8f56f97d219D53"
+        "56": "0x42c8d7460153178a8C3344DBE3EDc96A7Aa19322",
+        "1": "0x42c8d7460153178a8C3344DBE3EDc96A7Aa19322",
+        "137": "0x42c8d7460153178a8C3344DBE3EDc96A7Aa19322",
+        "121224": "0x0000000000000000000000000000000000000001",
+        "8453": "0x42c8d7460153178a8C3344DBE3EDc96A7Aa19322",
+        "130": "0x42c8d7460153178a8C3344DBE3EDc96A7Aa19322",
+        "42161": "0x42c8d7460153178a8C3344DBE3EDc96A7Aa19322"
       },
       "decimals": {
-        "20729": 18,
-        "820": 18,
         "56": 18,
-        "97": 18,
         "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
+        "137": 18,
+        "121224": 18,
+        "8453": 18,
+        "130": 18,
+        "42161": 18
       },
-      "logoURI": "https://bridge.sloth.finance/images/coins/clo.png"
+      "logoURI": "./images/Fushuma.svg"
     },
     {
-      "name": "Soy-ERC223",
-      "symbol": "SOY",
+      "name": "Tether USD",
+      "symbol": "USDT",
+      "variation": "eth",
       "address": {
-        "20729": "",
-        "820": "0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65",
-        "56": "",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "0xcC67D978Ddf07971D9050d2b424f36f6C1a15893",
-        "199": "0xcC00860947035a26Ffe24EcB1301ffAd3a89f910"
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
-    },
-    {
-      "name": "Bulls USD",
-      "symbol": "BUSDT",
-      "address": {
-        "20729": "",
-        "820": "0xbf6c50889d3a620eb42C0F188b65aDe90De958c4",
-        "56": "0x55d398326f99059fF775485246999027B3197955",
-        "97": "",
         "1": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-        "42": "",
-        "61": "0xCC48CD0B4a6f50b8f8bf0f9b80eD7881fA547968",
-        "199": "0xCC78D0A86B0c0a3b32DEBd773Ec815130F9527CF"
+        "121224": "0x1e11d176117dbEDbd234b1c6a10C6eb8dceD275e"
       },
       "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
         "1": 6,
-        "42": 6,
-        "61": 18,
-        "199": 18
+        "121224": 18
       },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4.png"
+      "logoURI": "./images/usdt.png"
     },
     {
-      "name": "Wrapped BNB",
+      "name": "Tether USD",
+      "symbol": "USDT",
+      "variation": "bsc",
+      "address": {
+        "56": "0x55d398326f99059fF775485246999027B3197955",
+        "121224": "0x9d0FB7b3fb7d37476aECcc47e29732460feB3be0"
+      },
+      "decimals": {
+        "56": 18,
+        "121224": 18
+      },
+      "logoURI": "./images/usdt.png"
+    },
+    {
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "address": {
+        "121224": "0xf8EA5627691E041dae171350E8Df13c592084848",
+        "8453": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+      },
+      "decimals": {
+        "121224": 18,
+        "8453": 18
+      },
+      "logoURI": "./images/usdc.png"
+    },
+    {
+      "name": "Binance Coin",
       "symbol": "BNB",
       "address": {
-        "20729": "0xCc0524d86Ba37Cb36B21a14B118723eAF609aDd8",
-        "820": "0xcCDe29903E621Ca12DF33BB0aD9D1ADD7261Ace9",
-        "56": "0x0000000000000000000000000000000000000007",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "0xcC653d74E087D35577049AB23e2141D619D95AEe",
-        "199": "0x185a4091027E2dB459a2433F85f894dC3013aeB5"
+        "56": "0x0000000000000000000000000000000000000001",
+        "121224": "0x27544116035a3dB6602268304117f6A056e58547"
       },
       "decimals": {
         "20729": 18,
         "820": 18,
         "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
+        "121224": 18
       },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xcCDe29903E621Ca12DF33BB0aD9D1ADD7261Ace9.png"
+      "logoURI": "./images/coins/0xcCDe29903E621Ca12DF33BB0aD9D1ADD7261Ace9.png"
     },
     {
-      "name": "Dogecoin Token",
-      "symbol": "DOGE",
-      "address": {
-        "20729": "",
-        "820": "0xcc68a5a0fe33fe74a24955717989ea094e6c2b9f",
-        "56": "0xbA2aE424d960c26247Dd6c32edC70B295c744C43",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 8,
-        "820": 8,
-        "56": 8,
-        "97": 8,
-        "1": 8,
-        "42": 8,
-        "61": 8,
-        "199": 8
-      },
-      "logoURI": "./images/0xcc68a5a0fe33fe74a24955717989ea094e6c2b9f.png"
-    },
-    {
-      "name": "Wrapped TWT",
-      "symbol": "TWT",
-      "address": {
-        "20729": "",
-        "820": "0xCC099e75152ACCda96d54FAbaf6e333ca44AD86e",
-        "56": "0x4B0F1812e5Df2A09796481Ff14017e6005508003",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCC099e75152ACCda96d54FAbaf6e333ca44AD86e.png"
-    },
-    {
-      "name": "Wrapped ETH",
+      "name": "Ethereum Coin",
       "symbol": "ETH",
+      "variation": "eth",
       "address": {
-        "20729": "",
-        "820": "0xcC208c32Cc6919af5d8026dAB7A3eC7A57CD1796",
-        "56": "",
-        "97": "",
-        "1": "0x0000000000000000000000000000000000000006",
-        "42": "",
-        "61": "0xcc74b43F5092B9Dd0A4a86c85794C7d19ff10d88",
-        "199": ""
+        "1": "0x0000000000000000000000000000000000000001",
+        "121224": "0x42c8d7460153178a8C3344DBE3EDc96A7Aa19322"
       },
       "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
         "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
+        "121224": 18
       },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xcC208c32Cc6919af5d8026dAB7A3eC7A57CD1796.png"
+      "logoURI": "./images/coins/0xcC208c32Cc6919af5d8026dAB7A3eC7A57CD1796.png"
     },
     {
-      "name": "Ethereum Classic",
-      "symbol": "ETC",
+      "name": "Ethereum Coin",
+      "symbol": "ETH",
+      "variation": "unichain",
       "address": {
-        "20729": "",
-        "820": "0xCCc766f97629a4E14b3af8C91EC54f0b5664A69F",
-        "56": "",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "0x0000000000000000000000000000000000000005",
-        "199": "0xCc944bF3e76d483e41CC6154d5196E2e5d348fB0"
+        "121224": "0x4922caaf79952d9f987AC6a449f891bfE97B9389",
+        "130": "0x0000000000000000000000000000000000000001"
       },
       "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
+        "121224": 18,
+        "130": 18
       },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCCc766f97629a4E14b3af8C91EC54f0b5664A69F.png"
+      "logoURI": "./images/coins/0xcC208c32Cc6919af5d8026dAB7A3eC7A57CD1796.png"
     },
     {
-      "name": "Wrapped ANTEX",
-      "symbol": "ANTEX",
+      "name": "Ethereum Coin",
+      "symbol": "ETH",
+      "variation": "arbitrum",
       "address": {
-        "20729": "",
-        "820": "0xCCd792f5D06b73685a1b54A32fE786346cAd1894",
-        "56": "0xCA1aCAB14e85F30996aC83c64fF93Ded7586977C",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
+        "121224": "0x6Dd5b658B6FA6242Cef0404F91951fC62741A3A3",
+        "42161": "0x0000000000000000000000000000000000000001"
       },
       "decimals": {
-        "20729": 8,
-        "820": 8,
-        "56": 8,
-        "97": 8,
-        "1": 8,
-        "42": 8,
-        "61": 8,
-        "199": 8
+        "121224": 18,
+        "42161": 18
       },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCCd792f5D06b73685a1b54A32fE786346cAd1894.png"
+      "logoURI": "./images/coins/0xcC208c32Cc6919af5d8026dAB7A3eC7A57CD1796.png"
     },
     {
-      "name": "Wrapped BAKE",
-      "symbol": "BAKE",
+      "name": "Ethereum Coin",
+      "symbol": "ETH",
+      "variation": "base",
       "address": {
-        "20729": "",
-        "820": "0xCCeC9F26F52E8e0D1d88365004f4F475f5274279",
-        "56": "0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
+        "121224": "0xdE88176B951E703B9ba7423FE1FED62e16e3F5E4",
+        "8453": "0x0000000000000000000000000000000000000001"
       },
       "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
+        "121224": 18,
+        "8453": 18
       },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCCeC9F26F52E8e0D1d88365004f4F475f5274279.png"
+      "logoURI": "./images/coins/0xcC208c32Cc6919af5d8026dAB7A3eC7A57CD1796.png"
     },
     {
-      "name": "Wrapped BBT",
-      "symbol": "BBT",
+      "name": "Polygon Coin",
+      "symbol": "POL",
       "address": {
-        "20729": "",
-        "820": "0xcCCaC2f22752bbe77D4DAb4e9421F2AC6c988427",
-        "56": "0xD48474E7444727bF500a32D5AbE01943f3A59A64",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
+        "137": "0x0000000000000000000000000000000000000001",
+        "121224": "0x8095fa918029F28AEccE771E683Aa7dB587cDf07"
       },
       "decimals": {
-        "20729": 8,
-        "820": 8,
-        "56": 8,
-        "97": 8,
-        "1": 8,
-        "42": 8,
-        "61": 8,
-        "199": 8
+        "137": 18,
+        "121224": 18
       },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xcCCaC2f22752bbe77D4DAb4e9421F2AC6c988427.png"
-    },
-    {
-      "name": "Wrapped BCOIN",
-      "symbol": "BCOIN",
-      "address": {
-        "20729": "",
-        "820": "0xcC6e7E97A46B6F0eD3bC81518Fc816da78F7cb65",
-        "56": "0x00e1656e45f18ec6747F5a8496Fd39B50b38396D",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xcC6e7E97A46B6F0eD3bC81518Fc816da78F7cb65.png"
-    },
-    {
-      "name": "Wrapped BTT",
-      "symbol": "BTT",
-      "address": {
-        "20729": "",
-        "820": "0xCc99C6635Fae4DAcF967a3fc2913ab9fa2b349C3",
-        "56": "",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": "0x0000000000000000000000000000000000000003"
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCc99C6635Fae4DAcF967a3fc2913ab9fa2b349C3.png"
-    },
-    {
-      "name": "Wrapped CAKE",
-      "symbol": "CAKE",
-      "address": {
-        "20729": "",
-        "820": "0xCC2D45F7fE1b8864a13F5D552345eB3f5a005FEd",
-        "56": "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCC2D45F7fE1b8864a13F5D552345eB3f5a005FEd.png"
-    },
-    {
-      "name": "ColdFi Tech Token",
-      "symbol": "CFT",
-      "address": {
-        "20729": "",
-        "820": "0x251A0d0121D50A9C907F701A1A644B8cF237d862",
-        "56": "0x251A0d0121D50A9C907F701A1A644B8cF237d862",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "./images/0x251A0d0121D50A9C907F701A1A644B8cF237d862.png"
-    },
-    {
-      "name": "Callisto Enterprise",
-      "symbol": "CLOE",
-      "address": {
-        "20729": "",
-        "820": "0x1eAa43544dAa399b87EEcFcC6Fa579D5ea4A6187",
-        "56": "0x09c4a1ACAE1b591C63691B8E62F46E2F0eD9A0F9",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "0x09c4a1ACAE1b591C63691B8E62F46E2F0eD9A0F9",
-        "199": "0xCC20d1B86bf1b80d4b9F0C19B138E17034457271"
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/820/0x1eAa43544dAa399b87EEcFcC6Fa579D5ea4A6187.png"
-    },
-    {
-      "name": "Wrapped FTM",
-      "symbol": "FTM",
-      "address": {
-        "20729": "",
-        "820": "0xcc50aB63766660C6C1157B8d6A5D51ceA82Dff34",
-        "56": "",
-        "97": "",
-        "1": "0x4E15361FD6b4BB609Fa63C81A2be19d873717870",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xcc50aB63766660C6C1157B8d6A5D51ceA82Dff34.png"
-    },
-    {
-      "name": "Wrapped LINA",
-      "symbol": "LINA",
-      "address": {
-        "20729": "",
-        "820": "0xCC10A4050917f771210407DF7A4C048e8934332c",
-        "56": "0x762539b45A1dCcE3D36d080F74d1AED37844b878",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCC10A4050917f771210407DF7A4C048e8934332c.png"
-    },
-    {
-      "name": "Wrapped RACA",
-      "symbol": "RACA",
-      "address": {
-        "20729": "",
-        "820": "0xCC8B04c0f7d0797B3BD6b7BE8E0061ac0c3c0A9b",
-        "56": "0x12BB890508c125661E03b09EC06E404bc9289040",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCC8B04c0f7d0797B3BD6b7BE8E0061ac0c3c0A9b.png"
-    },
-    {
-      "name": "Wrapped REEF",
-      "symbol": "REEF",
-      "address": {
-        "20729": "",
-        "820": "0xCc1530716A7eBecFdc7572eDCbF01766f042155c",
-        "56": "0xF21768cCBC73Ea5B6fd3C687208a7c2def2d966e",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCc1530716A7eBecFdc7572eDCbF01766f042155c.png"
-    },
-    {
-      "name": "Wrapped SHIB",
-      "symbol": "SHIB",
-      "address": {
-        "20729": "",
-        "820": "0xccA4F2ED7Fc093461c13f7F5d79870625329549A",
-        "56": "",
-        "97": "",
-        "1": "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xccA4F2ED7Fc093461c13f7F5d79870625329549A.png"
-    },
-    {
-      "name": "Wrapped TON",
-      "symbol": "TON",
-      "address": {
-        "20729": "",
-        "820": "0xCC50D400042177B9DAb6bd31ede73aE8e1ED6F08",
-        "56": "0x76A797A59Ba2C17726896976B7B3747BfD1d220f",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 9,
-        "820": 9,
-        "56": 9,
-        "97": 9,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCC50D400042177B9DAb6bd31ede73aE8e1ED6F08.png"
-    },
-    {
-      "name": "VIPSVERSE Token",
-      "symbol": "VVT",
-      "address": {
-        "20729": "",
-        "820": "0x9f9b6DD3DEDB4D2e6C679bCb8782f546400e9A53",
-        "56": "0x9f9b6DD3DEDB4D2e6C679bCb8782f546400e9A53",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/820/0x9f9b6DD3DEDB4D2e6C679bCb8782f546400e9A53.png"
-    },
-    {
-      "name": "Wrapped WSG",
-      "symbol": "WSG",
-      "address": {
-        "20729": "",
-        "820": "0xccEbb9f0EE6D720DebccEE42f52915037f774A70",
-        "56": "0xA58950F05FeA2277d2608748412bf9F802eA4901",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xccEbb9f0EE6D720DebccEE42f52915037f774A70.png"
-    },
-    {
-      "name": "Wrapped XMS",
-      "symbol": "XMS",
-      "address": {
-        "20729": "",
-        "820": "0xcc45afedd2065EDcA770801055d1E376473a871B",
-        "56": "0x7859B01BbF675d67Da8cD128a50D155cd881B576",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xcc45afedd2065EDcA770801055d1E376473a871B.png"
-    },
-    {
-      "name": "Wrapped ZOO",
-      "symbol": "ZOO",
-      "address": {
-        "20729": "",
-        "820": "0xCC9aFcE1e164fC2b381A3a104909e2D9E52cfB5D",
-        "56": "0x1D229B958D5DDFca92146585a8711aECbE56F095",
-        "97": "",
-        "1": "",
-        "42": "",
-        "61": "",
-        "199": ""
-      },
-      "decimals": {
-        "20729": 18,
-        "820": 18,
-        "56": 18,
-        "97": 18,
-        "1": 18,
-        "42": 18,
-        "61": 18,
-        "199": 18
-      },
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCC9aFcE1e164fC2b381A3a104909e2D9E52cfB5D.png"
+      "logoURI": "./images/polygon.svg"
     }
   ]
 }

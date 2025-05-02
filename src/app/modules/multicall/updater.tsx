@@ -119,7 +119,7 @@ export default function Updater(): null {
   // wait for listeners to settle before triggering updates
   const debouncedListeners = useDebounce(state.callListeners, 100);
   const latestBlockNumber = useBlockNumber();
-  const chainId = localStorage.getItem('toChainId') ? Number(localStorage.getItem('toChainId')) : 820;
+  const chainId = localStorage.getItem('toChainId') ? Number(localStorage.getItem('toChainId')) : 121224;
   const multicallContract = useMulticallContract();
   const cancellations = useRef<{ blockNumber: number; cancellations: (() => void)[] }>();
 

@@ -10,7 +10,7 @@ import { getProviderByChainId } from '~/app/utils/getRpcUrl';
 declare let window: any;
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [1, 3, 4, 5, 42, 56, 61, 199, 820, 20729, 97]
+  supportedChainIds: [1, 56, 137, 8453, 130, 42161, 121224]
 });
 
 export function useEagerConnect() {

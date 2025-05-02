@@ -1,4 +1,3 @@
-import React from 'react';
 import './forminput.css';
 
 type propsType = {

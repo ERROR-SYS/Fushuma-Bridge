@@ -11,40 +11,83 @@
 
 .claim {
   margin-top: rem(50px);
+
   &__content {
     position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: space-around;
+
     &--blockbox {
       display: flex;
+      flex-direction: column;
+      margin-top: rem(300px);
+      position: relative;
+
+      div {
+        height: 65px;
+        width: 65px;
+        background: orange;
+        border-radius: 50%;
+        position: absolute;
+        right: -90px;
+        top: -97px;
+        box-shadow: orange 0 0 17px 2px;
+        animation: energy-ball 5s infinite;
+
+        span {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-weight: 700;
+          font-family: 'Expletus-Regular';
+          color: #fefefe;
+        }
+
+        .block {
+          top: 37%;
+        }
+
+        .number {
+          top: 66%;
+        }
+      }
+
+      .ninja {
+        z-index: 111;
+        animation: ninja 3s infinite;
+      }
+
+      .shadow-ninja {
+        z-index: 111;
+        opacity: 0.8;
+        animation: shadow 3s infinite;
+      }
+
       @media only screen and (max-width: $sm) {
-        margin-top: rem(130px);
+        margin: 0 auto;
+        margin-top: 12rem;
         display: flex;
         align-items: flex-end;
       }
     }
+
     &--text {
       @media only screen and (max-width: $sm) {
         margin-left: rem(50px);
       }
     }
+
     @media only screen and (max-width: $sm) {
       display: flex;
       flex-direction: column-reverse;
-    }
-    &__animal {
-      margin-top: rem(300px);
-      width: rem(300px);
-      z-index: 111;
-      @media only screen and (max-width: $sm) {
-        margin-top: rem(0px);
-      }
     }
 
     &__block {
       margin-top: rem(450px);
       width: rem(150px);
+
       /* bottom: 0%;
       position: absolute;
       -webkit-animation: linear infinite;
@@ -54,33 +97,38 @@
         margin-top: rem(0px);
       }
     }
+
     h4 {
-      font-family: 'Lato-Bold';
-      font-size: rem(45px);
-      color: value($color-primary, normal);
+      font-family: 'Expletus-Regular';
+      font-size: 2.8125rem;
+      color: #ce1f2e;
+      text-transform: capitalize;
     }
+
     p {
-      width: rem(450px);
-      margin-top: rem(49px);
-      font-family: 'Lato-Regular';
-      font-size: rem(25px);
-      color: value($color-basic, dark);
+      margin-top: 1.0625rem;
+      font-family: 'NotoSans';
+      font-size: 21px;
+      color: #000000;
     }
   }
+
   &__claimbtn {
+    font-family: 'Expletus-Regular';
+    font-size: 16px;
     margin-top: rem(49px);
     width: rem(200px);
     text-transform: uppercase;
-    font-size: rem(14px);
     padding-top: rem(10px);
     padding-bottom: rem(10px);
-    font-family: 'Lato-Bold';
     letter-spacing: 0.8px;
+
     @media screen and (max-width: 400px) {
       width: rem(150px);
       padding-bottom: rem(5px);
     }
   }
+
   &__getclo {
     margin-top: rem(49px);
     width: rem(200px);
@@ -91,9 +139,73 @@
     font-family: 'Lato-Bold';
     letter-spacing: 0.8px;
     margin-left: rem(15px);
+
     @media screen and (max-width: 400px) {
       width: rem(150px);
       padding-bottom: rem(5px);
     }
+  }
+}
+
+@keyframes ninja {
+  0% {
+    transform: translateY(-5px);
+  }
+
+  50% {
+    transform: translateY(-50px);
+  }
+
+  100% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes shadow {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(.7);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes energy-ball {
+  0% {
+    transform: translateX(0) translateY(0) scale(1);
+    box-shadow: rgb(255 198 0) 0 0 17px 0px;
+    background-color: rgb(255 198 0);
+  }
+
+  25% {
+    transform: translateX(-10px) translateY(-10px) scale(1.1);
+    box-shadow: orange 0 0 17px 5px;
+    background-color: orange;
+  }
+
+  50% {
+    transform: translateX(-20px) translateY(0px) scale(1);
+    box-shadow: rgb(255 198 0) 0 0 17px 0px;
+    background-color: rgb(255 198 0);
+  }
+
+  75% {
+    transform: translateX(-10px) translateY(10px) scale(1.1);
+    box-shadow: orange 0 0 17px 5px;
+    background-color: orange;
+  }
+
+  100% {
+    transform: translateX(0px) translateY(0px) scale(1);
+    box-shadow: rgb(255 198 0) 0 0 17px 0px;
+    background-color: rgb(255 198 0);
   }
 }

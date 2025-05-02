@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '~/app/components/common/CustomButton';
@@ -7,11 +7,14 @@ import { MIN_GAS_AMOUNT } from '~/app/constants';
 import useActiveWeb3React from '~/app/hooks/useActiveWeb3React';
 import useClaim from '~/app/hooks/useClaim';
 import useToast from '~/app/hooks/useToast';
-import { useGetCLOBalance } from '~/app/hooks/wallet';
+import { useGetCLOBalance, useGetCLOBalance1 } from '~/app/hooks/wallet';
 import useGetWalletState from '~/app/modules/wallet/hooks';
 import { submitClaimAction } from '~/app/utils/apiHelper';
-import getSignatures from '~/app/utils/getSignatures';
-import claimAnimal from '~/assets/images/animal.gif';
+import getSignatures, { requiredSignatures } from '~/app/utils/getSignatures';
+import { useSelector } from 'react-redux';
+import { blockConfirmations } from '~/app/constants/config';
+import ninja from '~/assets/images/ninja-transfer.png';
+import shadow from '~/assets/images/ninja-shadow.png';
 import './claim.css';
 
 type props = {
@@ -20,43 +23,53 @@ type props = {
   confirmedCounts?: number;
   totalBlockCounts?: number;
   web3?: any;
+  isApproving: boolean;
+  isAdding: boolean;
+  isCreating: boolean;
+  isTransfering: boolean;
 };
 
-export default function Claim({ succeed, totalBlockCounts }: props) {
+export default function Claim({ succeed, totalBlockCounts, isApproving, isAdding, isCreating, isTransfering }: props) {
   const [t] = useTranslation();
   const { chainId } = useActiveWeb3React();
   const navigate = useNavigate();
 
   const [pending, setPending] = useState(false);
 
-  const { hash, fromNetwork, swapType, toNetwork } = useGetWalletState();
-  const cloBalance = useGetCLOBalance(toNetwork);
+  const { hash, fromNetwork, swapType, toNetwork, selectedToken } = useGetWalletState();
+  const cloBalance = useGetCLOBalance1();
   const { onSimpleClaim, onAdvancedClaim } = useClaim();
   const { toastError, toastSuccess } = useToast();
+  const [waitingMsg, setWaitingMsg] = useState('Fetching bridge data...');
+
+  const { start_swapping, confirmedBlockCounts } = useSelector((state: any) => state.walletBridge);
+
+  const dispBNumber =
+    !start_swapping && confirmedBlockCounts !== 0 ? blockConfirmations[chainId] : confirmedBlockCounts;
+
+  useEffect(() => {
+    if (isAdding) {
+      setWaitingMsg(`Adding ${selectedToken.symbol} to the bridge...`);
+    } else if (isCreating) {
+      setWaitingMsg(`Creating wrapped version of ${selectedToken.symbol}...`);
+    } else if (isApproving) {
+      setWaitingMsg('Please approve the transfer.');
+    } else if (succeed) {
+      setWaitingMsg(`Your ${selectedToken.symbol} are now on ${toNetwork.name}!`);
+    } else if (isTransfering) {
+      setWaitingMsg(`Transfering your ${selectedToken.symbol}...`);
+    } else {
+      setWaitingMsg('Fetching bridge data...');
+    }
+  }, [isAdding, isCreating, isApproving, isTransfering, succeed]);
 
   const onClaim = async () => {
     if (hash === '') {
       return;
     }
     setPending(true);
-    const { signatures, respJSON } = await getSignatures(hash, fromNetwork.chainId);
 
-    if (signatures.length < 3) {
-      setPending(false);
-      toastError('Failed to get signature.');
-      return;
-    }
-
-    if (respJSON.chainId !== chainId.toString()) {
-      toastError(`You are in wrong network. Please switch to ${toNetwork.name}.`);
-      setPending(false);
-      return;
-    }
-
-    if (
-      (cloBalance < MIN_GAS_AMOUNT[820] && chainId === 820) ||
-      (cloBalance < MIN_GAS_AMOUNT[199] && chainId === 199)
-    ) {
+    if (cloBalance < MIN_GAS_AMOUNT[121224] && chainId === 121224) {
       submitClaimAction(hash, fromNetwork.chainId)
         .then((res: any) => {
           if (res?.isSuccess) {
@@ -74,6 +87,23 @@ export default function Claim({ succeed, totalBlockCounts }: props) {
           setPending(false);
         });
     } else {
+      const { signatures, respJSON } = await getSignatures(hash, fromNetwork.chainId);
+
+      console.log('signatures', signatures);
+      console.log('respJSON', respJSON);
+
+      if (signatures.length < requiredSignatures) {
+        setPending(false);
+        toastError('Failed to fetch signatures.');
+        return;
+      }
+
+      if (respJSON.chainId !== chainId.toString()) {
+        toastError(`You are in wrong network. Please switch to ${toNetwork.name}.`);
+        setPending(false);
+        return;
+      }
+
       if (swapType === 'swap') handleClaim(signatures, respJSON);
       else if (swapType === 'advanced-swap') handleAdvancedClaim(signatures, respJSON);
     }
@@ -144,20 +174,25 @@ export default function Claim({ succeed, totalBlockCounts }: props) {
     <div className="claim container">
       <div className="claim__content">
         <div className="claim__content--blockbox">
-          <img src={claimAnimal} className="claim__content__animal" alt="claimAnimal" />
+          {start_swapping && (
+            <div className="energy-ball">
+              <span className="block">Block</span>
+              <span className="number">{dispBNumber}</span>
+            </div>
+          )}
+          <img src={ninja} className="ninja" alt="ninja" />
+          <img src={shadow} className="shadow-ninja" alt="ninja-shadow" />
         </div>
         <div className="claim__content--text">
-          <h4>{succeed ? t('Transfer is done!') : t('Transfer is in progress')}</h4>
+          <h4>{waitingMsg}</h4>
           <p>
-            {t(
-              `Please wait for ${totalBlockCounts} ${
-                totalBlockCounts === 1 ? 'block confirmation' : 'block confirmations'
-              } to claim your transaction.`
-            )}
+            {succeed
+              ? 'Please wait for 1 block confirmation before claiming your transaction.'
+              : `${totalBlockCounts} block confirmations are needed to claim this transaction.`}
           </p>
-          {(cloBalance < MIN_GAS_AMOUNT[820] || cloBalance < MIN_GAS_AMOUNT[199]) &&
+          {/* {(cloBalance < MIN_GAS_AMOUNT[820] || cloBalance < MIN_GAS_AMOUNT[199]) &&
             chainId === Number(toNetwork.chainId) &&
-            pending && <p>{t(`Please wait, we are claiming for you...`)}</p>}
+            pending && <p>{t(`Please wait, we are claiming for you...`)}</p>} */}
 
           {succeed && (
             <CustomButton className="claim__claimbtn" disabled={pending} onClick={onClaim}>

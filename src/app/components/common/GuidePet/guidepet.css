@@ -3,10 +3,16 @@
   position: absolute;
   right: 0px;
   bottom: 0px;
-  &__videoguide {
-    margin-left: rem(30px);
-    width: rem(190px);
+
+  img {
+    width: 130px;
+    margin-bottom: 15px;
   }
+
+  &__videoguide {
+    width: max-content;
+  }
+
   @media only screen and (max-width: $md) {
     bottom: -50px;
   }

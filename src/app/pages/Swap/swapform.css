@@ -2,103 +2,179 @@
   @media only screen and (max-width: $sm) {
     text-align: center;
   }
+
+  .checkmark {
+    top: -2px;
+  }
+
   label {
-    font-family: 'Lato-Bold';
-    font-size: rem(18px);
+    font-family: 'NotoSans';
+    font-size: rem(14px);
     color: value($color-basic, dark);
-    margin-bottom: rem(10px);
+
     @media only screen and (max-width: $sm) {
       display: inherit;
       text-align: left;
     }
   }
+
   &__subtext {
-    font-family: 'Lato-Regular';
+    font-family: 'NotoSans';
     font-size: rem(14px) !important;
     color: value($color-basic, dark);
     margin-top: rem(-10px);
+
     @media only screen and (max-width: $sm) {
       text-align: left;
     }
   }
+
   &__description {
-    font-family: 'Lato-Regular';
+    font-family: 'NotoSans';
     font-size: rem(14px) !important;
     color: value($color-basic, dark);
+
     @media only screen and (max-width: $sm) {
       text-align: left;
     }
   }
-  &__destinationinput {
-    font-size: rem(16px) !important;
+
+  .destination-input-container .input-group {
+    padding: 2px 0px;
   }
+
+  &__destinationinput {
+    font-size: rem(14px) !important;
+  }
+
   &__submit {
     margin-top: rem(15px);
     width: 100%;
     padding: rem(15px) rem(0px);
     border: none;
-    border-bottom-left-radius: rem(27px);
-    border-bottom-right-radius: rem(27px);
     background-color: value($color-primary, normal);
-    font-family: 'Lato-Bold';
-    font-size: rem(20px);
+    font-family: 'Expletus-Bold';
+    font-size: rem(18px);
     color: value($color-basic, brightest);
     letter-spacing: 1px;
+    transition: all ease .3s;
+
     @media only screen and (max-width: $sm) {
       width: 80%;
-      border-bottom-left-radius: rem(15px);
-      border-bottom-right-radius: rem(15px);
-      border-top-left-radius: rem(15px);
-      border-top-right-radius: rem(15px);
     }
+
     &:disabled {
       opacity: 0.5;
     }
   }
+
   &__button {
     margin-top: rem(15px);
     width: 100%;
     padding: rem(10px) rem(0px);
     border: none;
     background-color: value($color-primary, normal);
-    font-family: 'Lato-Bold';
+    font-family: 'Expletus-Bold';
     font-size: rem(20px);
     color: value($color-basic, brightest);
     letter-spacing: 1px;
+
     @media only screen and (max-width: $sm) {
       width: 80%;
-      border-bottom-left-radius: rem(15px);
-      border-bottom-right-radius: rem(15px);
-      border-top-left-radius: rem(15px);
-      border-top-right-radius: rem(15px);
     }
+
     &:disabled {
       opacity: 0.5;
     }
   }
+
+  .customcheckbox label {
+    font-size: 14px;
+    padding-left: 29px;
+    margin-bottom: -6px;
+
+    .checkmark {
+      top: 1px;
+      height: 20px;
+      width: 20px;
+
+      &::after {
+        width: 5px;
+        height: 10px;
+      }
+    }
+  }
+
   &__row {
     padding: rem(0px) rem(44px);
   }
+
   &__label {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 7px;
   }
+
   &__max-button {
+    font-size: 11px;
+    font-family: 'Expletus-Bold';
+    transition: all ease .3s;
     border: none;
-    padding: 2px 10px;
+    padding: 2px 9px;
     border-radius: 5px;
-    background-color: #7ea224 !important;
+    background-color: #ce1f2e !important;
     color: value($color-basic, brightest);
     font-weight: bold !important;
     cursor: pointer;
+
     &:hover {
+      transition: all ease .3s;
       opacity: 0.8;
       color: #000000;
     }
   }
 }
+
+.forminput input {
+  font-size: 14px !important;
+}
+
+.forminput span {
+  font-size: 14px !important;
+}
+
 .w-100 {
   width: 100%;
+}
+
+.destination-input-container .forminput {
+  animation: fade .3s;
+}
+
+.swapform_amount {
+  text-align: left;
+
+  i {
+    font-size: 12px;
+
+    strong {
+      color: value($color-basic, bright);
+    }
+  }
+
+  .forminput {
+    margin-bottom: 0;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

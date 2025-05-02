@@ -3,7 +3,7 @@ import sample from 'lodash/sample';
 import { Networks } from '~/app/constants/strings';
 
 // Array of available nodes to connect to
-export const nodes = [process.env.REACT_APP_NODE_1];
+export const nodes = [process.env.REACT_APP_FUSHUMA_NODE_1];
 
 const getNodeUrl = () => {
   return sample(nodes);

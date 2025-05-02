@@ -1,8 +1,8 @@
 {
-  "name": "soy.finance.bridge",
-  "description": "soy finance bridge",
+  "name": "fushuma.bridge",
+  "description": "Token Bridge for Fushuma Chain.",
   "license": "",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "start": "craco start",
     "build": "craco build",

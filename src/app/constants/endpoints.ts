@@ -5,4 +5,4 @@ export const endpoints = {
 
 export const faucetLink = 'https://clo.click/Callisto-Faucet';
 
-export const CLAIMAPI = 'https://bridge01.callisto.network/claim?';
+export const CLAIMAPI = 'https://iy4y4qnffokbpqzmb55f2c6jpy0vmwiq.lambda-url.us-east-1.on.aws/claim?';

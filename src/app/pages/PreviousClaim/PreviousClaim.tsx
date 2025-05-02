@@ -5,21 +5,26 @@ import { useNavigate } from 'react-router-dom';
 import BorderContainer from '~/app/components/common/BorderContainer';
 import CustomButton from '~/app/components/common/CustomButton';
 import Spinner from '~/app/components/common/Spinner';
-import NetworkSelection from '~/app/components/NetworkSelection';
-import WalletInfo from '~/app/components/WalletInfo';
+import NetworkSelection from '~/app/components/NetworkSelection/NetworkOneSelection';
 import { MIN_GAS_AMOUNT } from '~/app/constants';
 import { INetwork } from '~/app/constants/interface';
 import { Networks, NetworksObj } from '~/app/constants/strings';
 import useActiveWeb3React from '~/app/hooks/useActiveWeb3React';
 import useGetWeb3 from '~/app/hooks/useGetWeb3';
 import useToast from '~/app/hooks/useToast';
-import { useGetBTTBalance, useGetCLOBalance1, useGetTokenBalances, useNativeETHBalance } from '~/app/hooks/wallet';
+import { useGetCLOBalance1, useGetTokenBalances } from '~/app/hooks/wallet';
 import { setFromNetwork } from '~/app/modules/wallet/action';
 import { getBridgeContract, shortAddress } from '~/app/utils';
 import { submitClaimAction } from '~/app/utils/apiHelper';
-import getSignatures from '~/app/utils/getSignatures';
+import getSignatures, { requiredSignatures, sigs } from '~/app/utils/getSignatures';
+import { setSelectedToken } from '~/app/modules/wallet/action';
+import { getErc20Contract } from '~/app/hooks/wallet';
+import getWrappedTokenABI from '~/app/constants/abis/getWrappedToken.json';
 import { switchNetwork } from '~/app/utils/wallet';
 import previousIcon from '~/assets/images/previous.svg';
+import { getBridgeAddress } from '~/app/utils/addressHelpers';
+import { useRpcProvider } from '~/app/hooks/wallet';
+import { ethers } from 'ethers';
 import './previousclaim.css';
 
 export default function PreviousClaim() {
@@ -35,15 +40,14 @@ export default function PreviousClaim() {
   const web3 = useGetWeb3(fromNetwork?.rpcs[0]);
 
   const { library, chainId, account } = useActiveWeb3React();
-  const [networkOne, setNetworkOne] = useState(NetworksObj[chainId ?? 820]);
+  const [networkOne, setNetworkOne] = useState(NetworksObj[chainId ?? 121224]);
+  const [switchingNetwork, setSwitchingNetwork] = useState(false);
+  const RPC_URL = useRpcProvider(NetworksObj[chainId]?.rpcs);
 
-  const pendingBalance = useGetTokenBalances(NetworksObj[chainId ?? 820]);
+  const pendingBalance = useGetTokenBalances(NetworksObj[chainId ?? 121224]);
   const { toastError, toastWarning, toastInfo, toastSuccess } = useToast();
 
   const cloBalance = useGetCLOBalance1();
-  const bttBalance = useGetBTTBalance();
-
-  const nativeCoinBalance = useNativeETHBalance();
 
   useEffect(() => {
     const get = async () => {
@@ -56,6 +60,8 @@ export default function PreviousClaim() {
               //console.log(reciever);
               setDestinationAddress(reciever);
             }
+          } else {
+            setDestinationAddress('');
           }
         })
         .catch((error: any) => {
@@ -67,34 +73,66 @@ export default function PreviousClaim() {
     }
   }, [web3, hash]);
 
+  useEffect(() => {
+    if (pending) {
+      handleClaim();
+    } else if (switchingNetwork) {
+      setSwitchingNetwork(false);
+    }
+  }, [library]);
+
+  useEffect(() => {
+    if (hash === '' || hash.length !== 66) {
+      setDestinationAddress('');
+    }
+  }, [hash]);
+
   const onPrevious = () => {
-    navigate('/');
+    navigate('/select');
   };
 
   const onPreviousClaim = () => {
+    setPending(true);
     handleClaim();
   };
 
+  const switchNetworkCatch = () => {
+    setNetworkOne(NetworksObj[chainId]);
+    dispatch(setFromNetwork(NetworksObj[chainId]));
+    setSwitchingNetwork(false);
+  };
+
   const onChangeNetworkOne = async (option: INetwork) => {
-    setNetworkOne(option);
-    dispatch(setFromNetwork(option));
+    if (!switchingNetwork && option.name !== networkOne.name) {
+      try {
+        console.log(option);
+        setSwitchingNetwork(true);
+        setNetworkOne(option);
+        dispatch(setFromNetwork(option));
+        switchNetwork(option, library, switchNetworkCatch);
+      } catch (e) {
+        console.log(option);
+        setNetworkOne(NetworksObj[chainId]);
+        dispatch(setFromNetwork(NetworksObj[chainId]));
+        setSwitchingNetwork(false);
+      }
+    }
   };
 
   async function getSig3() {
-    let sig;
-    for (let i = 0; i < 4; i++) {
-      sig = await getSignatures(hash, fromNetwork.chainId);
-      if (sig.signatures.length >= 3) {
-        return sig;
-      }
+    const sig = await getSignatures(hash, fromNetwork.chainId);
+
+    if (sig.signatures.length >= requiredSignatures) {
+      return sig;
     }
-    return sig;
+
+    return { signatures: [], respJSON: {} };
   }
 
   async function handleClaim() {
     try {
       const { signatures, respJSON } = await getSig3();
-      if (signatures.length < 3) {
+      if (signatures.length < sigs.length) {
         setPending(false);
         toastWarning(
           'Warning!',
@@ -105,33 +143,52 @@ export default function PreviousClaim() {
       if (respJSON.chainId !== chainId.toString()) {
         const toNetwork = Networks.find((item) => item.chainId === respJSON.chainId);
         try {
-          toastInfo('Info!', 'Please change your network to claim this transaction');
+          console.log(toNetwork);
           await switchNetwork(toNetwork, library);
-          setPending(false);
           return;
         } catch (error) {
-          toastWarning('Warning!', 'Please check your network connection and try again.');
+          toastWarning('Warning!', 'Error occured while switching the network.');
           setPending(false);
           return;
         }
       } else {
-        if (nativeCoinBalance < 1.0 && chainId !== 820) {
-          toastWarning('Warning!', 'Insufficient gas in wallet.');
+        if (!hash) {
+          toastError('Transaction Hash is undefined.');
           return;
         }
-        if (nativeCoinBalance < 100.0 && chainId !== 199) {
-          toastWarning('Warning!', 'Insufficient gas in wallet.');
-          return;
+        try {
+          const bridgeAddr = await getBridgeAddress(chainId);
+          const signer = await library.getSigner(account);
+          const getTokenContract = await new ethers.Contract(bridgeAddr, getWrappedTokenABI, signer);
+          const isTokenAdded = await getTokenContract.getToken(respJSON.originalToken, respJSON.originalChainID);
+          let toAddress;
+          if (respJSON.originalChainID == chainId) {
+            toAddress = isTokenAdded[0];
+          } else {
+            toAddress = isTokenAdded[2];
+          }
+          let tokenDecimals;
+          if (toAddress.startsWith('0x00000000000000000000000000000000000000')) {
+            tokenDecimals = 18;
+          } else {
+            const tokenContract = getErc20Contract(toAddress, RPC_URL);
+            tokenDecimals = await tokenContract.decimals();
+          }
+          const tokenData = {
+            isCustom: true,
+            toAddress: toAddress,
+            decimals: {}
+          } as {
+            isCustom: boolean;
+            toAddress: `0x${string}`;
+            decimals: any;
+          };
+          tokenData.decimals[chainId] = tokenDecimals;
+          dispatch(setSelectedToken(tokenData));
+        } catch (e) {
+          console.log(e);
         }
-        if (hash) {
-          setPending(true);
-        } else {
-          return;
-        }
-        if (
-          (cloBalance < MIN_GAS_AMOUNT[820] && chainId === 820) ||
-          (bttBalance < MIN_GAS_AMOUNT[199] && chainId === 199)
-        ) {
+        if (cloBalance < MIN_GAS_AMOUNT[121224] && chainId === 121224) {
           submitClaimAction(hash, fromNetwork.chainId)
             .then((res: any) => {
               if (res?.isSuccess) {
@@ -148,6 +205,7 @@ export default function PreviousClaim() {
             })
             .catch((err) => {
               toastError(t('Failed to claim. Please try again.'));
+              console.log(err);
               setPending(false);
               setHash('');
             });
@@ -158,7 +216,8 @@ export default function PreviousClaim() {
           let tx;
           if (respJSON.data && respJSON.toContract) {
             const gasLimit = await bridgeContract.estimateGas.claimToContract(
-              respJSON.token,
+              respJSON.originalToken,
+              respJSON.originalChainID,
               hash,
               respJSON.to,
               respJSON.value,
@@ -172,7 +231,8 @@ export default function PreviousClaim() {
             );
 
             tx = await bridgeContract.claimToContract(
-              respJSON.token,
+              respJSON.originalToken,
+              respJSON.originalChainID,
               hash,
               respJSON.to,
               respJSON.value,
@@ -187,7 +247,8 @@ export default function PreviousClaim() {
             );
           } else {
             const gasLimit = await bridgeContract.estimateGas.claim(
-              respJSON.token,
+              respJSON.originalToken,
+              respJSON.originalChainID,
               hash,
               respJSON.to,
               respJSON.value,
@@ -197,7 +258,8 @@ export default function PreviousClaim() {
             );
 
             tx = await bridgeContract.claim(
-              respJSON.token,
+              respJSON.originalToken,
+              respJSON.originalChainID,
               hash,
               respJSON.to,
               respJSON.value,
@@ -215,14 +277,20 @@ export default function PreviousClaim() {
             navigate('/transfer');
             toastSuccess(t('Success!'), t('Claimed successfully.'));
           } else {
+            console.log(receipt);
             setPending(false);
             toastError(t('Error!'), t('Failed to claim. Please try again.'));
           }
           setPending(false);
         }
       }
-    } catch (err) {
-      toastError(t('Error!'), t('Failed to claim. Please try again.'));
+    } catch (err: any) {
+      console.log(err);
+      if (err.message.includes('Transaction already processed')) {
+        toastError(t('Error!'), t('Transaction already claimed.'));
+      } else {
+        toastError(t('Error!'), t('Failed to claim. Please try again.'));
+      }
       setPending(false);
     }
   }
@@ -231,7 +299,6 @@ export default function PreviousClaim() {
     <div className="previousclaim container">
       <div className="previousclaim__content">
         <div>
-          <WalletInfo pending={pendingBalance} fromNetwork={NetworksObj[chainId ?? 820]} />
           <CustomButton className="previous_btn mt-4" onClick={onPrevious}>
             <div>
               <img src={previousIcon} alt="previousIcon" className="me-2" />
@@ -240,26 +307,38 @@ export default function PreviousClaim() {
           </CustomButton>
         </div>
         <div className="previousclaim__content__steps">
-          <h5>Claim a previous transaction </h5>
-          <p className="mt-5">{t('Select networks')}</p>
-          <h6 className="mt-4">{t('From')}</h6>
-          <NetworkSelection options={Networks} selected={networkOne.symbol} onChange={onChangeNetworkOne} />
+          <h5>Claim Uncompleted Transaction</h5>
+          <p className="mt-5">{t('Select Origin Network')}</p>
+          {switchingNetwork ? (
+            <div className="chain-loading">
+              <Spinner></Spinner>
+              <span>Switching to {networkOne.name}...</span>
+            </div>
+          ) : (
+            <NetworkSelection
+              options={Networks}
+              selected={networkOne.name}
+              onChange={onChangeNetworkOne}
+              isChanging={switchingNetwork as boolean}
+            />
+          )}
         </div>
         <BorderContainer className="previousclaim__claiminfo">
-          <p>Previous Transaction Hash</p>
-          <input
-            className="previousclaim__claiminfo__hashInput"
-            value={hash}
-            onChange={(e) => setHash(e.target.value)}
-            placeholder="Previous transaction hash"
-            autoFocus
-          />
-          <p className="mt-5">Destination wallet</p>
-          <h6>{shortAddress(destinationAddress, 21, 7)}</h6>
-          <hr />
+          <div className="container">
+            <p>Uncompleted Transaction Hash</p>
+            <input
+              className="previousclaim__claiminfo__hashInput"
+              value={hash}
+              onChange={(e) => setHash(e.target.value)}
+              placeholder="Previous transaction hash"
+              autoFocus
+            />
+            <p className="mt-5">Destination wallet</p>
+            <h6>{shortAddress(destinationAddress, 21, 7)}</h6>
+          </div>
           <button
             color="success"
-            disabled={hash === '' || pending || pendingBalance}
+            disabled={hash === '' || pending || switchingNetwork || destinationAddress === ''}
             className="previousclaim__claiminfo__button"
             onClick={onPreviousClaim}
           >

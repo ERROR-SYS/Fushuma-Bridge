@@ -2,7 +2,7 @@ import { prevChainIdKey } from '../constants';
 
 // Set of helper functions to facilitate wallet setup
 declare let window: any;
-const BASE_URL = 'https://bridge.sloth.finance/images/coins/';
+const BASE_URL = `./images/coins/`;
 /**
  * Prompt the user to add BSC as a network on Metamask, or switch to BSC if the wallet is on a different network
  * @returns {boolean} true if the setup succeeded, false otherwise
@@ -65,9 +65,8 @@ export const setupEthereumNetwork = async (curNet: any) => {
   }
 };
 
-export const switchNetwork = async (curNet: any, library?: any) => {
+export const switchNetwork = async (curNet: any, library?: any, switchNetworkCatch?: () => void) => {
   const provider = await library?.provider;
-
   if (provider) {
     const chainId = parseInt(curNet.chainId, 10);
     window.localStorage.setItem(prevChainIdKey, chainId);
@@ -103,6 +102,9 @@ export const switchNetwork = async (curNet: any, library?: any) => {
           });
         } catch (error: any) {
           console.error(error.message);
+          if (switchNetworkCatch) {
+            switchNetworkCatch();
+          }
         }
       }
       return false;
@@ -124,7 +126,7 @@ export const registerToken = async (
   tokenAddress: string,
   tokenSymbol: string,
   tokenDecimals: number,
-  chainId = 820,
+  chainId: number,
   logo: any = null
 ) => {
   const tokenAdded = await window.ethereum.request({

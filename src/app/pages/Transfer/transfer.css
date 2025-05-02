@@ -2,18 +2,22 @@
   /* min-height: rem(900px); */
   margin-bottom: rem(50px);
   margin-top: rem(50px);
+
   @media only screen and (max-width: $md) {
     min-height: rem(1050px);
   }
+
   &__content {
     position: relative;
     display: flex;
     align-items: flex-end;
+
     .previous_btn {
       @media only screen and (max-width: $sm) {
         bottom: -60px;
       }
     }
+
     @media only screen and (max-width: $sm) {
       display: block;
     }
@@ -25,38 +29,61 @@
       margin-bottom: rem(80px);
       padding-left: 0px;
       text-align: center;
+
       @media only screen and (max-width: $sm) {
         padding-left: rem(0px);
         padding-right: rem(0px);
         padding-bottom: rem(0px);
       }
+
       h4 {
         display: inline-block;
-        font-family: 'Lato-Bold';
-        font-size: rem(45px);
+        font-family: 'Expletus-Regular';
+        font-size: 45px;
         color: value($color-primary, normal);
-        border: 2px solid rgba(value($color-basic, bright), 0.22);
-        border-radius: rem(27px);
+        border: none;
+        border-radius: 0;
         padding: rem(20px) rem(90px);
       }
+
       p {
-        font-family: 'Lato-Regular';
+        font-family: 'NotoSans';
         font-size: rem(23px);
         color: value($color-basic, dark);
         letter-spacing: 0.5px;
+
         strong {
           font-family: 'Lato-Bold';
         }
       }
+
       h6 {
-        font-family: 'Lato-Regular';
-        font-size: rem(22px);
+        font-family: 'NotoSans';
+        font-size: rem(18px);
         color: value($color-basic, dark);
+
+        b {
+          color: #ce1f2e !important;
+        }
+
+        a {
+          cursor: pointer;
+          color: #ce1f2e !important;
+          transition: all ease .3s;
+          text-decoration: underline !important;
+
+          &:hover {
+            color: #d9c6a5 !important;
+            transition: all ease .3s;
+          }
+        }
       }
     }
   }
+
   &__mobile {
     text-align: center;
+
     p {
       font-family: 'Lato-Bold';
       font-size: 17px;
@@ -64,6 +91,7 @@
       text-align: center;
       color: #6b184e;
     }
+
     &__submit {
       margin-top: rem(35px);
       width: 60%;
@@ -83,6 +111,7 @@
   &__selection {
     min-height: rem(100px);
     justify-content: center !important;
+
     .tokenselection-option {
       opacity: 1;
     }

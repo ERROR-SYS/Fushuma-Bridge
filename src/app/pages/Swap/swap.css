@@ -1,30 +1,41 @@
+@media screen and (max-width: $lg) {
+
+  html,
+  body {
+    font-size: 16px;
+  }
+}
+
 .swap {
-  min-height: rem(700px);
   margin-top: rem(50px);
-  @media only screen and (max-width: $md) {
-    min-height: rem(1000px);
-  }
-  @media only screen and (max-width: $sm) {
-    min-height: rem(1250px);
-  }
+
   &__content {
     position: relative;
-    display: flex;
-    align-items: flex-end;
+    display: block;
+
     @media only screen and (max-width: $md) {
       display: block;
       align-items: flex-start;
     }
+
     @media only screen and (max-width: $sm) {
       display: block;
     }
+
     &--mainboard {
       display: flex;
       align-items: flex-start;
+
       @media only screen and (max-width: $sm) {
         display: block;
       }
     }
+
+    &__bordercontainer {
+      margin: 0 auto;
+      border: 2px solid #9f8455;
+    }
+
     &__steps {
       flex: 1;
       display: flex;
@@ -32,57 +43,82 @@
       padding: rem(100px) rem(80px);
       padding-top: rem(0px);
       padding-bottom: rem(0px);
-      padding-right: rem(300px);
+
       @media only screen and (max-width: $sm) {
         display: initial;
       }
+
       /* margin-bottom: rem(150px); */
       p {
-        font-family: 'Lato-Regular';
-        font-size: rem(23px);
+        font-family: 'NotoSans';
+        font-size: rem(17px);
         color: value($color-basic, dark);
         letter-spacing: 0.5px;
+
         strong {
-          font-family: 'Lato-Bold';
+          font-family: 'Expletus-Bold';
+          color: value($color-basic, bright);
         }
       }
+
       h6 {
-        font-family: 'Lato-Regular';
+        font-family: 'NotoSans';
         font-size: rem(14px);
         color: value($color-basic, dark);
       }
     }
+
     &--row {
       padding-left: rem(44px);
       padding-right: rem(44px);
+
       @media only screen and (max-width: $sm) {
         text-align: center;
       }
     }
+
     &__bordercontainer {
       width: rem(500px);
       padding-top: rem(47px);
+      border-radius: 0;
+
       @media only screen and (max-width: $sm) {
         width: auto;
         border: none;
       }
     }
   }
+
   .tokenitem {
     padding-top: rem(30px);
     display: flex;
     justify-content: space-between;
+
     p {
-      font-family: 'Lato-Regular';
+      font-family: 'NotoSans';
       font-size: rem(16px);
       color: value($color-basic, dark);
     }
   }
+
   .receive_tokens {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
   }
+
+  .previous_btn {
+    margin-top: 30px;
+
+    @media only screen and (max-width: $md) {
+      position: unset;
+    }
+
+    @media (max-width: $sm) {
+      margin-left: 20px;
+    }
+  }
+
   .margin-top-5 {
     margin-top: 5px;
   }

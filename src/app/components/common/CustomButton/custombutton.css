@@ -1,15 +1,24 @@
 .custombutton {
   background-color: value($color-primary, normal);
   border: none;
-  font-family: 'Lato-Bold';
-  font-size: calc(10px + 0.8vmin);
+  font-family: 'Expletus-Regular';
+  font-size: 19px;
   color: value($color-basic, brightest);
   padding: rem(6px) rem(23px);
-  border-radius: value($border-radius, normal);
+  transition: all ease .3s;
+  letter-spacing: .3px;
+
   &:hover {
-    opacity: 0.8;
+    background-color: #d9c198;
+    transition: all ease .3s;
   }
+
   &:disabled {
     opacity: 0.5;
+
+    &:hover {
+      background-color: value($color-primary, normal);
+      transition: all ease .3s;
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import guidePet from '~/assets/images/guide.svg';
+import guidePet from '~/assets/images/help-ninja.png';
 import CustomButton from '../CustomButton';
 import './guidepet.css';
 

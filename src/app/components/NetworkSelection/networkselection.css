@@ -2,6 +2,7 @@
   margin-top: rem(30px);
   overflow-x: auto;
   padding: 0 0 20px 0;
+
   &-option {
     /* width: 50px;
     height: 50px; */
@@ -10,24 +11,31 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-right: rem(15px);
     border: 2px solid value($color-basic, bright);
     padding: rem(15px) rem(20px);
-    border-radius: rem(16px);
     opacity: 0.4;
-    font-family: 'Lato-Regular';
-    font-size: rem(18px);
+    font-family: 'NotoSans';
+    font-size: rem(16px);
     color: value($color-basic, dark);
+    min-width: 216px;
+
     img {
-      width: rem(36px);
-      height: rem(36px);
-      margin-right: rem(8px);
+      height: rem(32px);
+      margin-right: 0.6rem;
     }
   }
+
   &-container {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    @media (max-width: $sm) {
+      justify-content: center;
+    }
   }
+
   &-selected {
     opacity: 1;
   }

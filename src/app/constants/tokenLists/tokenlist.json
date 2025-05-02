@@ -7,7 +7,7 @@
     "patch": 0
   },
   "tags": {},
-  "logoURI": "https://bridge.sloth.finance/images/clo.png",
+  "logoURI": "http://localhost:3000/images/clo.png",
   "keywords": [
     "SoyFinance",
     "default"
@@ -19,7 +19,7 @@
       "address": "0x1eAa43544dAa399b87EEcFcC6Fa579D5ea4A6187",
       "chainId": 820,
       "decimals": 18,
-      "logoURI": "https://bridge.sloth.finance/images/coins/0x1eAa43544dAa399b87EEcFcC6Fa579D5ea4A6187.png"
+      "logoURI": "http://localhost:3000/images/coins/0x1eAa43544dAa399b87EEcFcC6Fa579D5ea4A6187.png"
     },
     {
       "name": "Coinary Token",
@@ -27,7 +27,7 @@
       "address": "0x6182d2cd59227c20B486a53976dcEeAF38e76Eed",
       "chainId": 820,
       "decimals": 18,
-      "logoURI": "https://bridge.sloth.finance/images/coins/0x6182d2cd59227c20B486a53976dcEeAF38e76Eed.png"
+      "logoURI": "http://localhost:3000/images/coins/0x6182d2cd59227c20B486a53976dcEeAF38e76Eed.png"
     },
     {
       "name": "Bulls USD",
@@ -35,7 +35,7 @@
       "address": "0xbf6c50889d3a620eb42C0F188b65aDe90De958c4",
       "chainId": 820,
       "decimals": 18,
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4.png"
+      "logoURI": "http://localhost:3000/images/coins/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4.png"
     },
     {
       "name": "Wrapped BNB",
@@ -43,7 +43,7 @@
       "address": "0xCC78D0A86B0c0a3b32DEBd773Ec815130F9527CF",
       "chainId": 820,
       "decimals": 18,
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xCC78D0A86B0c0a3b32DEBd773Ec815130F9527CF.png"
+      "logoURI": "http://localhost:3000/images/coins/0xCC78D0A86B0c0a3b32DEBd773Ec815130F9527CF.png"
     },
     {
       "name": "Wrapped ETH",
@@ -51,7 +51,7 @@
       "address": "0xcC00860947035a26Ffe24EcB1301ffAd3a89f910",
       "chainId": 820,
       "decimals": 18,
-      "logoURI": "https://bridge.sloth.finance/images/coins/0xcC00860947035a26Ffe24EcB1301ffAd3a89f910.png"
+      "logoURI": "http://localhost:3000/images/coins/0xcC00860947035a26Ffe24EcB1301ffAd3a89f910.png"
     },
     {
       "name": "Soy-ERC223",
@@ -59,7 +59,7 @@
       "address": "0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65",
       "chainId": 820,
       "decimals": 18,
-      "logoURI": "https://bridge.sloth.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
+      "logoURI": "http://localhost:3000/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
     }
   ]
 }

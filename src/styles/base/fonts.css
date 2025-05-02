@@ -4,43 +4,36 @@
  */
 
 @font-face {
-  font-family: 'OpenSans';
-  font-path: '../../src/assets/fonts/OpenSans/OpenSans-Light';
+  font-family: 'NotoSans';
+  font-path: '../../src/assets/fonts/NotoSans/NotoSans-Light';
   font-weight: value($font-weight, light);
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'OpenSans';
-  font-path: '../../src/assets/fonts/OpenSans/OpenSans-Regular';
+  font-family: 'NotoSans';
+  font-path: '../../src/assets/fonts/NotoSans/NotoSans-Regular';
   font-weight: value($font-weight, normal);
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'OpenSans';
-  font-path: '../../src/assets/fonts/OpenSans/OpenSans-Bold';
+  font-family: 'NotoSans';
+  font-path: '../../src/assets/fonts/NotoSans/NotoSans-Bold';
   font-weight: value($font-weight, bold);
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Lato-Light';
-  src: url('../../src/assets/fonts/Lato/Lato-Light.ttf');
+  font-family: 'Expletus-Regular';
+  src: url('../../src/assets/fonts/ExpletusSans/ExpletusSans-Regular.ttf');
   font-weight: value($font-weight, light);
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Lato-Regular';
-  src: url('../../src/assets/fonts/Lato/Lato-Regular.ttf');
+  font-family: 'Expletus-Bold';
+  src: url('../../src/assets/fonts/ExpletusSans/ExpletusSans-Bold.ttf');
   font-weight: value($font-weight, normal);
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Lato-Bold';
-  src: url('../../src/assets/fonts/Lato/Lato-Bold.ttf');
-  font-weight: value($font-weight, bold);
   font-style: normal;
 }

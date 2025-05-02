@@ -7,9 +7,11 @@ import getNodeUrl from './getRpcUrl';
 
 const POLLING_INTERVAL = 12000;
 const rpcUrl = getNodeUrl();
-const chainId = process.env.REACT_APP_CHAIN_ID;
+const chainId = process.env.REACT_APP_FUSHUMA_NODE_1;
 
-const injected = new InjectedConnector({ supportedChainIds: [1, 4, 56, 61, 820, 20729, 97, 199] });
+const injected = new InjectedConnector({
+  supportedChainIds: [1, 56, 137, 8453, 130, 42161, 121224]
+});
 
 const walletconnect = new WalletConnectConnector({
   rpc: { [chainId]: rpcUrl },

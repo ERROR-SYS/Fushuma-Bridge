@@ -1,18 +1,41 @@
 [
   {
+    "type": "constructor",
+    "stateMutability": "nonpayable",
+    "inputs": []
+  },
+  {
     "type": "event",
-    "name": "AddTokenMigration",
+    "name": "AddToken",
     "inputs": [
       {
         "type": "address",
-        "name": "tokenFrom",
+        "name": "token",
         "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "chainID",
+        "internalType": "uint256",
         "indexed": false
       },
       {
-        "type": "address",
-        "name": "tokenTo",
-        "internalType": "address",
+        "type": "uint256",
+        "name": "decimals",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "string",
+        "name": "name",
+        "internalType": "string",
+        "indexed": false
+      },
+      {
+        "type": "string",
+        "name": "symbol",
+        "internalType": "string",
         "indexed": false
       }
     ],
@@ -24,13 +47,25 @@
     "inputs": [
       {
         "type": "address",
+        "name": "originalToken",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "originalChainID",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "address",
         "name": "token",
         "internalType": "address",
         "indexed": true
       },
       {
         "type": "address",
-        "name": "sender",
+        "name": "receiver",
         "internalType": "address",
         "indexed": true
       },
@@ -44,12 +79,6 @@
         "type": "uint256",
         "name": "toChainId",
         "internalType": "uint256",
-        "indexed": false
-      },
-      {
-        "type": "address",
-        "name": "toToken",
-        "internalType": "address",
         "indexed": false
       },
       {
@@ -73,6 +102,18 @@
     "inputs": [
       {
         "type": "address",
+        "name": "originalToken",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "originalChainID",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "address",
         "name": "token",
         "internalType": "address",
         "indexed": true
@@ -99,12 +140,6 @@
         "type": "uint256",
         "name": "fromChainId",
         "internalType": "uint256",
-        "indexed": false
-      },
-      {
-        "type": "address",
-        "name": "fromToken",
-        "internalType": "address",
         "indexed": false
       }
     ],
@@ -116,6 +151,18 @@
     "inputs": [
       {
         "type": "address",
+        "name": "originalToken",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "originalChainID",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "address",
         "name": "token",
         "internalType": "address",
         "indexed": true
@@ -142,12 +189,6 @@
         "type": "uint256",
         "name": "fromChainId",
         "internalType": "uint256",
-        "indexed": false
-      },
-      {
-        "type": "address",
-        "name": "fromToken",
-        "internalType": "address",
         "indexed": false
       },
       {
@@ -167,12 +208,6 @@
         "type": "address",
         "name": "toToken",
         "internalType": "address",
-        "indexed": false
-      },
-      {
-        "type": "bool",
-        "name": "isWrapped",
-        "internalType": "bool",
         "indexed": false
       },
       {
@@ -196,13 +231,25 @@
     "inputs": [
       {
         "type": "address",
+        "name": "originalToken",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "originalChainID",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "address",
         "name": "token",
         "internalType": "address",
         "indexed": true
       },
       {
         "type": "address",
-        "name": "sender",
+        "name": "receiver",
         "internalType": "address",
         "indexed": true
       },
@@ -217,12 +264,6 @@
         "name": "toChainId",
         "internalType": "uint256",
         "indexed": false
-      },
-      {
-        "type": "address",
-        "name": "toToken",
-        "internalType": "address",
-        "indexed": false
       }
     ],
     "anonymous": false
@@ -235,7 +276,13 @@
         "type": "address",
         "name": "sender",
         "internalType": "address",
-        "indexed": true
+        "indexed": false
+      },
+      {
+        "type": "address",
+        "name": "token",
+        "internalType": "address",
+        "indexed": false
       },
       {
         "type": "uint256",
@@ -324,6 +371,38 @@
   },
   {
     "type": "event",
+    "name": "SetBridgeFee",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "token",
+        "internalType": "address",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "fee",
+        "internalType": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SetContractCaller",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "newContractCaller",
+        "internalType": "address",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "SetFeeTo",
     "inputs": [
       {
@@ -362,12 +441,81 @@
   },
   {
     "type": "event",
+    "name": "SetRequiredAuthority",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "authority",
+        "internalType": "address",
+        "indexed": false
+      },
+      {
+        "type": "bool",
+        "name": "isEnable",
+        "internalType": "bool",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SetSupportedChain",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "chainID",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "bool",
+        "name": "isSupported",
+        "internalType": "bool",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "SetThreshold",
     "inputs": [
       {
         "type": "uint256",
         "name": "threshold",
         "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "minRequiredAuthorities",
+        "internalType": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SetTokenAuthority",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "token",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "chainId",
+        "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "address",
+        "name": "authority",
+        "internalType": "address",
         "indexed": false
       }
     ],
@@ -409,11 +557,24 @@
     "type": "function",
     "stateMutability": "nonpayable",
     "outputs": [],
-    "name": "ChangeFounder",
+    "name": "addAuthorities",
+    "inputs": [
+      {
+        "type": "address[]",
+        "name": "_authorities",
+        "internalType": "address[]"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "addToken",
     "inputs": [
       {
         "type": "address",
-        "name": "newFounders",
+        "name": "token",
         "internalType": "address"
       }
     ]
@@ -422,12 +583,37 @@
     "type": "function",
     "stateMutability": "nonpayable",
     "outputs": [],
-    "name": "addAuthority",
+    "name": "addWrappedToken",
     "inputs": [
       {
         "type": "address",
-        "name": "authority",
+        "name": "token",
         "internalType": "address"
+      },
+      {
+        "type": "uint256",
+        "name": "chainID",
+        "internalType": "uint256"
+      },
+      {
+        "type": "uint256",
+        "name": "decimals",
+        "internalType": "uint256"
+      },
+      {
+        "type": "string",
+        "name": "name",
+        "internalType": "string"
+      },
+      {
+        "type": "string",
+        "name": "symbol",
+        "internalType": "string"
+      },
+      {
+        "type": "bytes[]",
+        "name": "sig",
+        "internalType": "bytes[]"
       }
     ]
   },
@@ -471,21 +657,16 @@
   },
   {
     "type": "function",
-    "stateMutability": "view",
-    "outputs": [
-      {
-        "type": "uint256",
-        "name": "nonce",
-        "internalType": "uint256"
-      },
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "changeFounder",
+    "inputs": [
       {
         "type": "address",
-        "name": "addr",
+        "name": "newFounders",
         "internalType": "address"
       }
-    ],
-    "name": "calculateNonce",
-    "inputs": []
+    ]
   },
   {
     "type": "function",
@@ -495,8 +676,13 @@
     "inputs": [
       {
         "type": "address",
-        "name": "token",
+        "name": "originalToken",
         "internalType": "address"
+      },
+      {
+        "type": "uint256",
+        "name": "originalChainID",
+        "internalType": "uint256"
       },
       {
         "type": "bytes32",
@@ -527,14 +713,19 @@
   },
   {
     "type": "function",
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "outputs": [],
     "name": "claimToContract",
     "inputs": [
       {
         "type": "address",
-        "name": "token",
+        "name": "originalToken",
         "internalType": "address"
+      },
+      {
+        "type": "uint256",
+        "name": "originalChainID",
+        "internalType": "uint256"
       },
       {
         "type": "bytes32",
@@ -575,99 +766,44 @@
   },
   {
     "type": "function",
-    "stateMutability": "nonpayable",
-    "outputs": [],
-    "name": "createPair",
-    "inputs": [
+    "stateMutability": "view",
+    "outputs": [
       {
         "type": "address",
-        "name": "toToken",
+        "name": "",
         "internalType": "address"
-      },
-      {
-        "type": "address",
-        "name": "fromToken",
-        "internalType": "address"
-      },
-      {
-        "type": "uint256",
-        "name": "fromChainId",
-        "internalType": "uint256"
-      },
-      {
-        "type": "bool",
-        "name": "isWrapped",
-        "internalType": "bool"
       }
-    ]
-  },
-  {
-    "type": "function",
-    "stateMutability": "nonpayable",
-    "outputs": [],
-    "name": "createWrappedToken",
-    "inputs": [
-      {
-        "type": "address",
-        "name": "fromToken",
-        "internalType": "address"
-      },
-      {
-        "type": "uint256",
-        "name": "fromChainId",
-        "internalType": "uint256"
-      },
-      {
-        "type": "string",
-        "name": "name",
-        "internalType": "string"
-      },
-      {
-        "type": "string",
-        "name": "symbol",
-        "internalType": "string"
-      },
-      {
-        "type": "uint8",
-        "name": "decimals",
-        "internalType": "uint8"
-      },
-      {
-        "type": "uint256",
-        "name": "nonce",
-        "internalType": "uint256"
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "stateMutability": "nonpayable",
-    "outputs": [],
-    "name": "deletePair",
-    "inputs": [
-      {
-        "type": "address",
-        "name": "toToken",
-        "internalType": "address"
-      },
-      {
-        "type": "uint256",
-        "name": "fromChainId",
-        "internalType": "uint256"
-      }
-    ]
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "receiver", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "value", "type": "uint256" },
-      { "internalType": "uint256", "name": "toChainId", "type": "uint256" }
     ],
-    "name": "depositTokens",
-    "outputs": [],
+    "name": "contractCaller",
+    "inputs": []
+  },
+  {
+    "type": "function",
     "stateMutability": "payable",
-    "type": "function"
+    "outputs": [],
+    "name": "depositTokens",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "receiver",
+        "internalType": "address"
+      },
+      {
+        "type": "address",
+        "name": "token",
+        "internalType": "address"
+      },
+      {
+        "type": "uint256",
+        "name": "value",
+        "internalType": "uint256"
+      },
+      {
+        "type": "uint256",
+        "name": "toChainId",
+        "internalType": "uint256"
+      }
+    ]
   },
   {
     "type": "function",
@@ -757,6 +893,147 @@
   },
   {
     "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      {
+        "type": "uint256",
+        "name": "fee",
+        "internalType": "uint256"
+      }
+    ],
+    "name": "getBridgeFee",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "token",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      {
+        "type": "tuple",
+        "name": "",
+        "internalType": "struct BridgeV2.Token",
+        "components": [
+          {
+            "type": "address",
+            "name": "token",
+            "internalType": "address"
+          },
+          {
+            "type": "uint256",
+            "name": "chainID",
+            "internalType": "uint256"
+          },
+          {
+            "type": "address",
+            "name": "wrappedToken",
+            "internalType": "address"
+          },
+          {
+            "type": "address",
+            "name": "authority",
+            "internalType": "address"
+          }
+        ]
+      }
+    ],
+    "name": "getToken",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "originalToken",
+        "internalType": "address"
+      },
+      {
+        "type": "uint256",
+        "name": "originalChainID",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      {
+        "type": "tuple",
+        "name": "",
+        "internalType": "struct BridgeV2.Token",
+        "components": [
+          {
+            "type": "address",
+            "name": "token",
+            "internalType": "address"
+          },
+          {
+            "type": "uint256",
+            "name": "chainID",
+            "internalType": "uint256"
+          },
+          {
+            "type": "address",
+            "name": "wrappedToken",
+            "internalType": "address"
+          },
+          {
+            "type": "address",
+            "name": "authority",
+            "internalType": "address"
+          }
+        ]
+      }
+    ],
+    "name": "getToken",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "nativeToken",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      {
+        "type": "tuple[]",
+        "name": "",
+        "internalType": "struct BridgeV2.TokenDetails[]",
+        "components": [
+          {
+            "type": "address",
+            "name": "token",
+            "internalType": "address"
+          },
+          {
+            "type": "uint8",
+            "name": "decimals",
+            "internalType": "uint8"
+          },
+          {
+            "type": "string",
+            "name": "name",
+            "internalType": "string"
+          },
+          {
+            "type": "string",
+            "name": "symbol",
+            "internalType": "string"
+          }
+        ]
+      }
+    ],
+    "name": "getTokenList",
+    "inputs": []
+  },
+  {
+    "type": "function",
     "stateMutability": "nonpayable",
     "outputs": [],
     "name": "initialize",
@@ -773,8 +1050,33 @@
       },
       {
         "type": "address",
+        "name": "_feeTo",
+        "internalType": "address"
+      },
+      {
+        "type": "address",
         "name": "_tokenImplementation",
         "internalType": "address"
+      },
+      {
+        "type": "uint256",
+        "name": "_threshold",
+        "internalType": "uint256"
+      },
+      {
+        "type": "address[]",
+        "name": "_authorities",
+        "internalType": "address[]"
+      },
+      {
+        "type": "uint256[]",
+        "name": "_chainID",
+        "internalType": "uint256[]"
+      },
+      {
+        "type": "string",
+        "name": "_nativeCoin",
+        "internalType": "string"
       }
     ]
   },
@@ -807,6 +1109,25 @@
         "internalType": "bool"
       }
     ],
+    "name": "isSupported",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [
+      {
+        "type": "bool",
+        "name": "",
+        "internalType": "bool"
+      }
+    ],
     "name": "isTxProcessed",
     "inputs": [
       {
@@ -826,31 +1147,12 @@
     "stateMutability": "view",
     "outputs": [
       {
-        "type": "address",
+        "type": "uint256",
         "name": "",
-        "internalType": "address"
+        "internalType": "uint256"
       }
     ],
-    "name": "migration",
-    "inputs": [
-      {
-        "type": "address",
-        "name": "",
-        "internalType": "address"
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "stateMutability": "view",
-    "outputs": [
-      {
-        "type": "bool",
-        "name": "",
-        "internalType": "bool"
-      }
-    ],
-    "name": "migrationSetupForbidden",
+    "name": "minRequiredAuthorities",
     "inputs": []
   },
   {
@@ -870,12 +1172,12 @@
     "type": "function",
     "stateMutability": "nonpayable",
     "outputs": [],
-    "name": "removeAuthority",
+    "name": "removeAuthorities",
     "inputs": [
       {
-        "type": "address",
-        "name": "authority",
-        "internalType": "address"
+        "type": "address[]",
+        "name": "_authorities",
+        "internalType": "address[]"
       }
     ]
   },
@@ -897,13 +1199,19 @@
     "stateMutability": "view",
     "outputs": [
       {
+        "type": "bool",
+        "name": "",
+        "internalType": "bool"
+      }
+    ],
+    "name": "requiredAuthorities",
+    "inputs": [
+      {
         "type": "address",
         "name": "",
         "internalType": "address"
       }
-    ],
-    "name": "requiredAuthority",
-    "inputs": []
+    ]
   },
   {
     "type": "function",
@@ -927,17 +1235,30 @@
     "type": "function",
     "stateMutability": "nonpayable",
     "outputs": [],
-    "name": "reversIsWrapped",
+    "name": "setBridgeFee",
     "inputs": [
       {
         "type": "address",
-        "name": "toToken",
+        "name": "token",
         "internalType": "address"
       },
       {
         "type": "uint256",
-        "name": "fromChainId",
+        "name": "fee",
         "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "setContractCaller",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "newContractCaller",
+        "internalType": "address"
       }
     ]
   },
@@ -976,12 +1297,35 @@
     "type": "function",
     "stateMutability": "nonpayable",
     "outputs": [],
-    "name": "setRequiredAuthority",
+    "name": "setRequiredAuthorities",
     "inputs": [
       {
-        "type": "address",
-        "name": "authority",
-        "internalType": "address"
+        "type": "address[]",
+        "name": "_authorities",
+        "internalType": "address[]"
+      },
+      {
+        "type": "bool",
+        "name": "isActive",
+        "internalType": "bool"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "setSupportedChain",
+    "inputs": [
+      {
+        "type": "uint256[]",
+        "name": "_chainID",
+        "internalType": "uint256[]"
+      },
+      {
+        "type": "bool",
+        "name": "_isSupported",
+        "internalType": "bool"
       }
     ]
   },
@@ -995,6 +1339,34 @@
         "type": "uint256",
         "name": "_threshold",
         "internalType": "uint256"
+      },
+      {
+        "type": "uint256",
+        "name": "_minRequiredAuthorities",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "setTokenMustAuthority",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "token",
+        "internalType": "address"
+      },
+      {
+        "type": "uint256",
+        "name": "chainID",
+        "internalType": "uint256"
+      },
+      {
+        "type": "address",
+        "name": "authority",
+        "internalType": "address"
       }
     ]
   },
@@ -1053,84 +1425,8 @@
         "internalType": "address"
       }
     ],
-    "name": "tokenForeign",
-    "inputs": [
-      {
-        "type": "uint256",
-        "name": "",
-        "internalType": "uint256"
-      },
-      {
-        "type": "address",
-        "name": "",
-        "internalType": "address"
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "stateMutability": "view",
-    "outputs": [
-      {
-        "type": "address",
-        "name": "",
-        "internalType": "address"
-      }
-    ],
     "name": "tokenImplementation",
     "inputs": []
-  },
-  {
-    "type": "function",
-    "stateMutability": "view",
-    "outputs": [
-      {
-        "type": "address",
-        "name": "token",
-        "internalType": "address"
-      },
-      {
-        "type": "bool",
-        "name": "isWrapped",
-        "internalType": "bool"
-      }
-    ],
-    "name": "tokenPair",
-    "inputs": [
-      {
-        "type": "uint256",
-        "name": "",
-        "internalType": "uint256"
-      },
-      {
-        "type": "address",
-        "name": "",
-        "internalType": "address"
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "stateMutability": "nonpayable",
-    "outputs": [],
-    "name": "tokenReceived",
-    "inputs": [
-      {
-        "type": "address",
-        "name": "_from",
-        "internalType": "address"
-      },
-      {
-        "type": "uint256",
-        "name": "_value",
-        "internalType": "uint256"
-      },
-      {
-        "type": "bytes",
-        "name": "_data",
-        "internalType": "bytes"
-      }
-    ]
   },
   {
     "type": "function",
@@ -1181,19 +1477,6 @@
       }
     ],
     "name": "upgradeTo",
-    "inputs": []
-  },
-  {
-    "type": "function",
-    "stateMutability": "view",
-    "outputs": [
-      {
-        "type": "uint256",
-        "name": "",
-        "internalType": "uint256"
-      }
-    ],
-    "name": "wrapNonce",
     "inputs": []
   }
 ]

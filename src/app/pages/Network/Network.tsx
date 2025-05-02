@@ -6,16 +6,16 @@ import { useMediaQuery } from 'react-responsive';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '~/app/components/common/CustomButton';
 import GuidePet from '~/app/components/common/GuidePet';
-import NetworkSelection from '~/app/components/NetworkSelection';
-import WalletInfo from '~/app/components/WalletInfo';
+import NetworkSelectionOne from '~/app/components/NetworkSelection/NetworkOneSelection';
+import NetworkSelectionTwo from '~/app/components/NetworkSelection/NetworkTwoSelection';
 import { INetwork } from '~/app/constants/interface';
 import { Networks, NetworksObj } from '~/app/constants/strings';
 import useActiveWeb3React from '~/app/hooks/useActiveWeb3React';
-import { useGetTokenBalances } from '~/app/hooks/wallet';
 import { setFromNetwork, setStartSwapping, setToNetwork } from '~/app/modules/wallet/action';
 import { switchNetwork } from '~/app/utils/wallet';
 import previousIcon from '~/assets/images/previous.svg';
 import './network.css';
+import Spinner from '~/app/components/common/Spinner';
 
 const Default = ({ children }: any) => {
   const isNotMobile = useMediaQuery({ minWidth: 768 });
@@ -28,10 +28,11 @@ export default function Network() {
   const navigate = useNavigate();
   const { library, chainId } = useActiveWeb3React();
 
-  const [networkOne, setNetworkOne] = useState(NetworksObj[chainId ?? 820]);
+  const [networkOne, setNetworkOne] = useState(NetworksObj[chainId ?? 121224]);
   const [networkTwo, setNetworkTwo] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>();
 
-  const pendingBalance = useGetTokenBalances(networkOne);
+  // const pendingBalance = useGetTokenBalances(networkOne);
 
   useEffect(() => {
     if (networkOne?.symbol === networkTwo?.symbol) {
@@ -40,17 +41,27 @@ export default function Network() {
   }, [networkOne, networkTwo]);
 
   useEffect(() => {
+    setNetworkTwo(null);
     const changeNetwork = async () => {
-      await switchNetwork(networkOne, library);
+      await switchNetwork(networkOne, library, () => setLoading(false));
     };
     changeNetwork();
   }, [networkOne, library]);
+
+  useEffect(() => {
+    if (loading) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    }
+  }, [library, loading]);
 
   useEffect(() => {
     dispatch(setStartSwapping(false));
   }, [dispatch]);
 
   const onChangeNetworkOne = async (option: INetwork) => {
+    setLoading(true);
     dispatch(setFromNetwork(option));
     setNetworkOne(option);
     localStorage.setItem('toChainId', option.chainId);
@@ -62,7 +73,7 @@ export default function Network() {
   };
 
   const onPrevious = () => {
-    navigate('/');
+    navigate('/select');
   };
 
   const onNext = () => {
@@ -83,34 +94,41 @@ export default function Network() {
         <Default>
           <GuidePet />
         </Default>
-        <WalletInfo pending={pendingBalance} fromNetwork={networkOne} />
         <div className="network__content__steps">
           <p>
-            <strong>{t('Step 1:')}</strong> {t('Select the origin network')}
+            <strong>{t('Step 1:')}</strong> {t('Select The Origin Network')}
           </p>
           <h6>{t('The network from which you want to send your assets.')}</h6>
-          <NetworkSelection options={Networks} selected={networkOne.symbol} onChange={onChangeNetworkOne} />
-
-          <p className="mt-5">
-            <strong>{t('Step 2:')}</strong> {t('Select the destination network')}
-          </p>
-          <h6>{t('The network to which you want to send your assets.')}</h6>
-          <NetworkSelection
-            options={
-              networkOne.symbol === 'CLO'
-                ? Networks
-                : networkOne.symbol === 'BNB' || networkOne.symbol === 'ETH'
-                ? [Networks[0], Networks[3]]
-                : [Networks[0]]
-            }
-            disabled={networkOne.symbol}
-            onChange={onChangeNetworkTwo}
+          <NetworkSelectionOne
+            options={Networks}
+            selected={networkOne.name}
+            onChange={onChangeNetworkOne}
+            isChanging={loading}
           />
-          <CustomButton
-            className="mt-5"
-            onClick={onNext}
-            disabled={networkOne === null || networkTwo === null || pendingBalance}
-          >
+          <div style={{ position: 'relative' }}>
+            <p className="mt-5">
+              <strong>{t('Step 2:')}</strong> {t('Select The Destination Network')}
+            </p>
+            <h6>{t('The network to which you want to send your assets.')}</h6>
+            {!loading ? (
+              <NetworkSelectionTwo
+                options={
+                  networkOne.symbol === 'FUMA'
+                    ? [Networks[1], Networks[2], Networks[3], Networks[4], Networks[5], Networks[6]]
+                    : [Networks[0]]
+                }
+                onChange={onChangeNetworkTwo}
+                networkOne={networkOne}
+              />
+            ) : (
+              <div className="chain-loading">
+                <Spinner></Spinner>
+                <span>Switching to {networkOne.name}...</span>
+              </div>
+            )}
+          </div>
+
+          <CustomButton className="mt-5 next-btn" onClick={onNext} disabled={networkTwo === null}>
             {t('Next')}
           </CustomButton>
         </div>

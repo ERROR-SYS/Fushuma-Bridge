@@ -12,6 +12,7 @@ import { getContract } from '~/app/utils';
 import { getBalanceAmount } from '~/app/utils/decimal';
 import { RPCs } from '../constants';
 import useActiveWeb3React from './useActiveWeb3React';
+import useGetWalletState from '../modules/wallet/hooks';
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -43,7 +44,7 @@ export const useGetCLOBalance = (net: any) => {
       const bn = new BigNumber(amount + 'e-' + 18);
       setAmt(bn.toNumber());
     };
-    if ((net.chainId === '820' || net.chainId === '199') && account) {
+    if (net.chainId === '121224' && account) {
       getBalance();
     }
   }, [account, RPC_URL, net]);
@@ -54,7 +55,7 @@ export const useGetCLOBalance = (net: any) => {
 export const useGetCLOBalance1 = () => {
   const { account, chainId } = useActiveWeb3React();
   const [amt, setAmt] = useState<number>(0);
-  const RPC_URL = useRpcProvider([process.env.REACT_APP_NODE_1]);
+  const RPC_URL = useRpcProvider([process.env.REACT_APP_FUSHUMA_NODE_1]);
 
   useEffect(() => {
     const getBalance = async () => {
@@ -62,7 +63,7 @@ export const useGetCLOBalance1 = () => {
       const bn = new BigNumber(amount + 'e-' + 18);
       setAmt(bn.toNumber());
     };
-    if (chainId === 820 && account) {
+    if (account) {
       getBalance();
     }
   }, [account, chainId, RPC_URL]);
@@ -174,7 +175,43 @@ export const useTokenBalance = (fromNet: any, curAsset?: any) => {
   return amt;
 };
 
-export const useGetTokenBalances = (fromNet: any) => {
+export const useGetTokenBalance = (fromNet: any, token: any, curNet: any) => {
+  const { account, chainId } = useActiveWeb3React();
+  const RPC_URL = useRpcProvider(fromNet?.rpcs);
+  const dispatch = useDispatch();
+  const [pending, setPending] = useState(true);
+  const { balance } = useGetWalletState();
+
+  useEffect(() => {
+    if (curNet && curNet == fromNet.chainId) {
+      const getBalance = async () => {
+        setPending(true);
+        const tokenContract = getErc20Contract(token.address[`${fromNet.chainId}`], RPC_URL);
+        const tokenBalance: BigNumber = await tokenContract.balanceOf(account, { value: 0 });
+        const balanceCopy = { ...balance };
+        // const strBalance = balance.toString();
+        if (tokenBalance) {
+          const decimal = token.decimals[`${fromNet.chainId}`];
+          const decimalBalance = getBalanceAmount(tokenBalance, decimal);
+          balanceCopy[`${token.symbol}`] = decimalBalance.toNumber();
+          dispatch(setBalance(balanceCopy));
+          setPending(false);
+        }
+      };
+      if (
+        account &&
+        chainId &&
+        chainId === Number(fromNet.chainId) &&
+        token.address[`${fromNet.chainId}`].slice(0, -1) != '0x000000000000000000000000000000000000000'
+      ) {
+        getBalance();
+      }
+    }
+  }, [account, chainId, RPC_URL, fromNet, dispatch]);
+  return pending;
+};
+
+export const useGetTokenBalances = (fromNet: any, toNet?: any) => {
   const { account, chainId } = useActiveWeb3React();
   const RPC_URL = useRpcProvider(fromNet?.rpcs);
   const dispatch = useDispatch();
@@ -183,7 +220,14 @@ export const useGetTokenBalances = (fromNet: any) => {
   useEffect(() => {
     const getBalance = async () => {
       setPending(true);
-      const tokens = defaultTokens.tokens.filter((t: any) => t.address[`${fromNet.chainId}`] !== '');
+      let tokens;
+      if (toNet) {
+        tokens = defaultTokens.tokens.filter(
+          (t: any) => t.address[`${fromNet.chainId}`] && t.address[`${toNet.chainId}`]
+        );
+      } else {
+        tokens = defaultTokens.tokens.filter((t: any) => t.address[`${fromNet.chainId}`]);
+      }
       const temp: { [symbol: string]: string | number } = {};
 
       tokens.forEach(async (curAsset: any, index: number) => {

@@ -11,12 +11,11 @@ export const deposit_event_abi = [
 ];
 
 export const blockConfirmations: { [chainId: number]: number } = {
-  '20729': 12,
-  '820': 64,
-  '97': 3,
   '56': 3,
   '1': 4,
-  '42': 4,
-  '61': 500,
-  '199': 4
+  '137': 300,
+  '121224': 64,
+  '8453': 300,
+  '130': 600,
+  '42161': 1200
 };
