@@ -170,6 +170,7 @@
       }
 
       .me-copied {
+        font-family: 'NotoSans';
         animation: fade .3s;
         color: #ce1f2e;
       }
