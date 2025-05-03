@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core';
 import { Field, Formik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import CustomCheckbox from '~/app/components/common/CustomCheckbox';
@@ -8,7 +8,6 @@ import FormInput from '~/app/components/common/FormInput';
 import Spinner from '~/app/components/common/Spinner';
 import { useGetAmountsInput, useGetAmountsOut } from '~/app/hooks/useGetAmountsOut';
 import useToast from '~/app/hooks/useToast';
-import { useGetCLOBalance } from '~/app/hooks/wallet';
 import useGetWalletState from '~/app/modules/wallet/hooks';
 import { escapeRegExp } from '~/app/utils';
 import { getBalanceAmount } from '~/app/utils/decimal';
@@ -58,7 +57,6 @@ export default function SwapForm({
   const { chainId, account, library } = useWeb3React();
 
   const { selectedToken, fromNetwork, toNetwork } = useGetWalletState();
-  const cloBalance = useGetCLOBalance(fromNetwork);
   const [swap_amount, setSwapAmount] = useState('');
   const [buy_amount, setBuyAmount] = useState('');
   const [destinationError, setDestinationError] = useState(false);
@@ -75,6 +73,10 @@ export default function SwapForm({
 
   const receiveOriginAmount = intInputAmount - getBalanceAmount(amountsIn).toNumber();
   const fullOutAmount = getBalanceAmount(amountsOut, selectedToken?.decimals[`${toNetwork.chainId}`]).toNumber();
+
+  const swapAmountRef = useRef(null);
+  const getTokensFeesRef = useRef(null);
+
   // const parsedAmount = tryParseAmount(buy_amount, outputCurrency ?? undefined);
 
   // const bestTradeExactOut = useTradeExactOut(
@@ -88,14 +90,28 @@ export default function SwapForm({
     setDestination(status);
   };
 
+  getTokensFeesRef.current = async () => {
+    const bridgeAddr = getBridgeAddress(fromNetwork.chainId);
+    const bridgeContract = getBridgeContract(bridgeAddr, library, account);
+    const fetchedFee = await bridgeContract.getBridgeFee(selectedToken.address[fromNetwork.chainId]);
+    const feeValue = ethers.BigNumber.from(fetchedFee).toNumber();
+    const fee = (Number(swap_amount) * feeValue) / 1000000;
+    const totalSwap = Number(swap_amount) - fee;
+    setTotalReceived(totalSwap);
+  };
+
   useEffect(() => {
     if (selectedToken && swap_amount) {
-      getTokenFees();
+      getTokensFeesRef.current();
     }
   }, [selectedToken, swap_amount]);
 
   useEffect(() => {
-    if (Number(swap_amount) !== totalReceived) {
+    swapAmountRef.current = swap_amount;
+  }, [swap_amount]);
+
+  useEffect(() => {
+    if (Number(swapAmountRef.current) !== totalReceived) {
       setShowFee(true);
     } else {
       setShowFee(false);
@@ -119,17 +135,7 @@ export default function SwapForm({
         setGasNeeded(0.005);
         break;
     }
-  }, [chainId, MIN_GAS_AMOUNT]);
-
-  const getTokenFees = async () => {
-    const bridgeAddr = getBridgeAddress(fromNetwork.chainId);
-    const bridgeContract = getBridgeContract(bridgeAddr, library, account);
-    const fetchedFee = await bridgeContract.getBridgeFee(selectedToken.address[fromNetwork.chainId]);
-    const feeValue = ethers.BigNumber.from(fetchedFee).toNumber();
-    const fee = (Number(swap_amount) * feeValue) / 1000000;
-    const totalSwap = Number(swap_amount) - fee;
-    setTotalReceived(totalSwap);
-  };
+  }, [chainId]);
 
   const onSubmit = (values: any) => {
     if (destination) {

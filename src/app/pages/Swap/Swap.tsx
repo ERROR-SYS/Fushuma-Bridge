@@ -74,6 +74,9 @@ const Swap = () => {
   const [swapCustomInfo, setSwapCustomInfo] = useState<any>();
   const swapCustomInfoRef = useRef(swapCustomInfo);
 
+  const addWrappedTokenRef = useRef<any>(null);
+  const swapCustomTokenRef = useRef<any>(null);
+
   const pendingBalance = useGetTokenBalance(fromNetwork, selectedToken, chainId);
 
   // const disable =
@@ -105,14 +108,105 @@ const Swap = () => {
 
   const outputCurrency: any = undefined;
 
-  useEffect(() => {
-    if (chainId == fromNetwork.chainId && waitingNetworkSwitchBack) {
-      setWaitingNetworkSwitchBack(false);
-      swapCustomToken();
-    } else if (chainId == toNetwork.chainId && waitingNetworkSwitch) {
-      addWrappedTokenFunction();
+  addWrappedTokenRef.current = async () => {
+    if (originalToken) {
+      setWaitingNetworkSwitch(false);
+      const bridgeAddr = await getBridgeAddress(chainId);
+      const bridgeContract = await getBridgeContract(bridgeAddr, library, account);
+      const signer = await library.getSigner(account);
+      const getTokenContract = await new ethers.Contract(bridgeAddr, getWrappedTokenABI, signer);
+
+      const isTokenAdded = await getTokenContract.getToken(originalToken.address, originalToken.chainId);
+      const chainIdFromData = ethers.BigNumber.from(isTokenAdded[1]).toNumber();
+
+      if (chainIdFromData) {
+        if (
+          isTokenAdded[2] !== selectedToken.address[fromNetwork.chainId] &&
+          isTokenAdded[2] !== '0x0000000000000000000000000000000000000000'
+        ) {
+          const token = { ...selectedToken };
+          token.toAddress = isTokenAdded[2];
+          dispatch(setSelectedToken(token));
+        }
+        addWrappedTokenResultHandler();
+        return true;
+      } else {
+        setAddingBridge(true);
+        const { signatures } = await getSignaturesAddWrapped(
+          selectedToken.address[fromNetwork.chainId],
+          fromNetwork.chainId
+        );
+        if (signatures.length !== requiredSignatures) {
+          toastError('Failed to fetch signatures.');
+          setPending(false);
+          return { status: false, hash: null } as any;
+        }
+        const value = '0';
+        let addWrappedTx;
+        try {
+          const addWrappedGasLimit = await bridgeContract.estimateGas.addWrappedToken(
+            selectedToken.address[toNetwork.chainId],
+            fromNetwork.chainId,
+            selectedToken.decimals[toNetwork.chainId],
+            selectedToken.name,
+            selectedToken.symbol,
+            signatures,
+            { value }
+          );
+          addWrappedTx = await bridgeContract.addWrappedToken(
+            selectedToken.address[toNetwork.chainId],
+            fromNetwork.chainId,
+            selectedToken.decimals[toNetwork.chainId],
+            selectedToken.name,
+            selectedToken.symbol,
+            signatures,
+            {
+              value,
+              gasLimit: addWrappedGasLimit.add(30000)
+            }
+          );
+          const isTokenAdded = await getTokenContract.getToken(originalToken.address, originalToken.chainId);
+          const token = { ...selectedToken };
+          token.toAddress = isTokenAdded[2];
+          dispatch(setSelectedToken(token));
+        } catch (e: any) {
+          setPending(false);
+          if (e.code === 4001) {
+            toastError('You declined the transaction.');
+          } else {
+            toastError('An error occured, please try again later.');
+          }
+        }
+        addWrappedTx.wait();
+        addWrappedTokenResultHandler();
+        return addWrappedTx;
+      }
     }
-  }, [library]);
+  };
+
+  swapCustomTokenRef.current = async () => {
+    const { address, bigAmount, value } = swapCustomInfoRef.current;
+    try {
+      const tx = await onSimpleSwap(address, swapTokenAddr, bigAmount, toNetwork.chainId, value);
+      if (tx.hash) {
+        await handleSetPending(tx.hash, address);
+      }
+    } catch (e: any) {
+      setPending(false);
+      if (!e.message.includes('hash')) {
+        toastError('An error occured, please try again later.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (chainId === Number(fromNetwork.chainId) && waitingNetworkSwitchBack) {
+      setWaitingNetworkSwitchBack(false);
+      swapCustomTokenRef.current();
+    } else if (chainId === Number(toNetwork.chainId) && waitingNetworkSwitch) {
+      addWrappedTokenRef.current();
+    }
+  }, [library, chainId, fromNetwork, toNetwork, waitingNetworkSwitch, waitingNetworkSwitchBack]);
 
   const onPrevious = () => {
     navigate('/tokens');
@@ -124,7 +218,7 @@ const Swap = () => {
 
   useEffect(() => {
     setTokenBalance(balance[`${selectedToken.symbol}`]);
-  }, [pendingBalance]);
+  }, [pendingBalance, balance, selectedToken]);
 
   useEffect(() => {
     const getCurrentBlock = () => {
@@ -147,7 +241,7 @@ const Swap = () => {
     if (txBlockNumber !== 0 && pending && !addingToken && !addingBridge) {
       getCurrentBlock();
     }
-  }, [dispatch, txBlockNumber, pending, library, toNetwork, web3, fromNetwork]);
+  }, [dispatch, txBlockNumber, pending, library, toNetwork, web3, fromNetwork, addingToken, addingBridge]);
 
   const onSubmit = (values: any) => {
     const currentBalance = Number(tokenBalance);
@@ -332,97 +426,6 @@ const Swap = () => {
     switchNetwork(fromNetwork, library);
   };
 
-  const addWrappedTokenFunction = async () => {
-    if (originalToken) {
-      setWaitingNetworkSwitch(false);
-      const bridgeAddr = await getBridgeAddress(chainId);
-      const bridgeContract = await getBridgeContract(bridgeAddr, library, account);
-      const signer = await library.getSigner(account);
-      const getTokenContract = await new ethers.Contract(bridgeAddr, getWrappedTokenABI, signer);
-
-      const isTokenAdded = await getTokenContract.getToken(originalToken.address, originalToken.chainId);
-      const chainIdFromData = ethers.BigNumber.from(isTokenAdded[1]).toNumber();
-
-      if (chainIdFromData) {
-        if (
-          isTokenAdded[2] !== selectedToken.address[fromNetwork.chainId] &&
-          isTokenAdded[2] !== '0x0000000000000000000000000000000000000000'
-        ) {
-          const token = { ...selectedToken };
-          token.toAddress = isTokenAdded[2];
-          dispatch(setSelectedToken(token));
-        }
-        addWrappedTokenResultHandler();
-        return true;
-      } else {
-        setAddingBridge(true);
-        const { signatures } = await getSignaturesAddWrapped(
-          selectedToken.address[fromNetwork.chainId],
-          fromNetwork.chainId
-        );
-        if (signatures.length !== requiredSignatures) {
-          toastError('Failed to fetch signatures.');
-          setPending(false);
-          return { status: false, hash: null } as any;
-        }
-        const value = '0';
-        let addWrappedTx;
-        try {
-          const addWrappedGasLimit = await bridgeContract.estimateGas.addWrappedToken(
-            selectedToken.address[toNetwork.chainId],
-            fromNetwork.chainId,
-            selectedToken.decimals[toNetwork.chainId],
-            selectedToken.name,
-            selectedToken.symbol,
-            signatures,
-            { value }
-          );
-          addWrappedTx = await bridgeContract.addWrappedToken(
-            selectedToken.address[toNetwork.chainId],
-            fromNetwork.chainId,
-            selectedToken.decimals[toNetwork.chainId],
-            selectedToken.name,
-            selectedToken.symbol,
-            signatures,
-            {
-              value,
-              gasLimit: addWrappedGasLimit.add(30000)
-            }
-          );
-          const isTokenAdded = await getTokenContract.getToken(originalToken.address, originalToken.chainId);
-          const token = { ...selectedToken };
-          token.toAddress = isTokenAdded[2];
-          dispatch(setSelectedToken(token));
-        } catch (e: any) {
-          setPending(false);
-          if (e.code === 4001) {
-            toastError('You declined the transaction.');
-          } else {
-            toastError('An error occured, please try again later.');
-          }
-        }
-        addWrappedTx.wait();
-        addWrappedTokenResultHandler();
-        return addWrappedTx;
-      }
-    }
-  };
-
-  const swapCustomToken = async () => {
-    const { address, bigAmount, value } = swapCustomInfoRef.current;
-    try {
-      const tx = await onSimpleSwap(address, swapTokenAddr, bigAmount, toNetwork.chainId, value);
-      if (tx.hash) {
-        await handleSetPending(tx.hash, address);
-      }
-    } catch (e: any) {
-      setPending(false);
-      if (!e.message.includes('hash')) {
-        toastError('An error occured, please try again later.');
-      }
-    }
-  };
-
   const updateSwapInfo = (newInfo: any) => {
     swapCustomInfoRef.current = newInfo; // Updates instantly
     setSwapCustomInfo({ ...newInfo }); // Triggers a re-render
@@ -468,7 +471,7 @@ const Swap = () => {
             await handleSetPending(tx.hash, address);
           }
         } else {
-          if (fromNetwork.chainId == chainId) {
+          if (Number(fromNetwork.chainId) === chainId) {
             const swapInfo = {
               address: address,
               bigAmount: bigAmount,

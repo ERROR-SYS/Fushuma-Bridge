@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '~/app/components/common/CustomButton';
@@ -20,11 +20,13 @@ export default function Transfer() {
   const RPC_URL = useRpcProvider(toNetwork?.rpcs);
   const [tokenSymbol, setTokenSymbol] = useState();
 
+  const fetchSymbolRef = useRef(null);
+
   useEffect(() => {
-    if (chainId == toNetwork.chainId) {
-      fetchSymbol();
+    if (chainId === Number(toNetwork.chainId)) {
+      fetchSymbolRef.current();
     }
-  }, [selectedToken]);
+  }, [selectedToken, chainId, toNetwork]);
 
   useEffect(() => {
     if (!account) {
@@ -32,7 +34,7 @@ export default function Transfer() {
     }
   }, [account, navigate]);
 
-  const fetchSymbol = async () => {
+  fetchSymbolRef.current = async () => {
     if (selectedToken.isCustom) {
       const contract = getErc20Contract(selectedToken.toAddress, RPC_URL);
       const contractSymbol = await contract.symbol();
@@ -47,7 +49,7 @@ export default function Transfer() {
   };
 
   const onSelectToken = async () => {
-    if (chainId == toNetwork.chainId) {
+    if (chainId === Number(toNetwork.chainId)) {
       if (selectedToken.isCustom) {
         registerToken(selectedToken.toAddress, tokenSymbol, selectedToken.decimals[toNetwork.chainId], toNetwork);
       } else {
@@ -87,7 +89,7 @@ export default function Transfer() {
                 You don&apos;t see your <b>{tokenSymbol}</b>?
               </h6>
               <h6 className="mt-3">
-                Add them to your wallet by clicking <a onClick={onSelectToken}>here</a>!
+                Add them to your wallet by clicking <button onClick={onSelectToken}>here</button>!
               </h6>
             </>
           )}

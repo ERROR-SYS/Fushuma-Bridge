@@ -9,7 +9,7 @@ const useGetAllowance = (tokenAddress: string, succeed?: boolean, tokenChainId?:
   const [allowed, setAllowed] = useState('0');
 
   useEffect(() => {
-    if (tokenChainId == chainId) {
+    if (tokenChainId === chainId) {
       const get = async () => {
         try {
           const bridgeAddr = await getBridgeAddress(chainId);
@@ -32,7 +32,7 @@ const useGetAllowance = (tokenAddress: string, succeed?: boolean, tokenChainId?:
         get();
       }
     }
-  }, [library, account, chainId, tokenAddress, succeed]);
+  }, [library, account, chainId, tokenAddress, succeed, tokenChainId]);
 
   const handleApprove = useCallback(async () => {
     if (tokenAddress !== '') {

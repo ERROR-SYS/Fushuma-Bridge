@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { useMediaQuery } from 'react-responsive';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '~/app/components/common/CustomButton';
 import TokenSelection from '~/app/components/TokenSelection';
@@ -17,12 +16,6 @@ import { useGetTokenBalances } from '~/app/hooks/wallet';
 import './tokenlist.css';
 import Spinner from '~/app/components/common/Spinner';
 import { getErc20Contract, useRpcProvider } from '~/app/hooks/wallet';
-import { cp } from 'fs';
-
-const Default = ({ children }: any) => {
-  const isNotMobile = useMediaQuery({ minWidth: 768 });
-  return isNotMobile ? children : null;
-};
 
 export default function TokenList() {
   const { account } = useWeb3React();
@@ -162,7 +155,7 @@ export default function TokenList() {
     } else {
       setEnableNext(false);
     }
-  }, [token, customContract, customDecimals, customSymbol, customName]);
+  }, [token, customContract, customDecimals, customSymbol, customName, isCustomToken]);
 
   useEffect(() => {
     if (!pendingBalance) {

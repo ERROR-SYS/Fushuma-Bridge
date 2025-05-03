@@ -7,7 +7,7 @@ import { MIN_GAS_AMOUNT } from '~/app/constants';
 import useActiveWeb3React from '~/app/hooks/useActiveWeb3React';
 import useClaim from '~/app/hooks/useClaim';
 import useToast from '~/app/hooks/useToast';
-import { useGetCLOBalance, useGetCLOBalance1 } from '~/app/hooks/wallet';
+import { useGetCLOBalance1 } from '~/app/hooks/wallet';
 import useGetWalletState from '~/app/modules/wallet/hooks';
 import { submitClaimAction } from '~/app/utils/apiHelper';
 import getSignatures, { requiredSignatures } from '~/app/utils/getSignatures';
@@ -61,7 +61,7 @@ export default function Claim({ succeed, totalBlockCounts, isApproving, isAdding
     } else {
       setWaitingMsg('Fetching bridge data...');
     }
-  }, [isAdding, isCreating, isApproving, isTransfering, succeed]);
+  }, [isAdding, isCreating, isApproving, isTransfering, succeed, selectedToken, toNetwork]);
 
   const onClaim = async () => {
     if (hash === '') {

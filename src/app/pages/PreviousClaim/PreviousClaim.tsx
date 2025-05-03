@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -12,11 +12,11 @@ import { Networks, NetworksObj } from '~/app/constants/strings';
 import useActiveWeb3React from '~/app/hooks/useActiveWeb3React';
 import useGetWeb3 from '~/app/hooks/useGetWeb3';
 import useToast from '~/app/hooks/useToast';
-import { useGetCLOBalance1, useGetTokenBalances } from '~/app/hooks/wallet';
+import { useGetCLOBalance1 } from '~/app/hooks/wallet';
 import { setFromNetwork } from '~/app/modules/wallet/action';
 import { getBridgeContract, shortAddress } from '~/app/utils';
 import { submitClaimAction } from '~/app/utils/apiHelper';
-import getSignatures, { requiredSignatures, sigs } from '~/app/utils/getSignatures';
+import getSignatures, { requiredSignatures } from '~/app/utils/getSignatures';
 import { setSelectedToken } from '~/app/modules/wallet/action';
 import { getErc20Contract } from '~/app/hooks/wallet';
 import getWrappedTokenABI from '~/app/constants/abis/getWrappedToken.json';
@@ -44,8 +44,11 @@ export default function PreviousClaim() {
   const [switchingNetwork, setSwitchingNetwork] = useState(false);
   const RPC_URL = useRpcProvider(NetworksObj[chainId]?.rpcs);
 
-  const pendingBalance = useGetTokenBalances(NetworksObj[chainId ?? 121224]);
-  const { toastError, toastWarning, toastInfo, toastSuccess } = useToast();
+  const { toastError, toastWarning, toastSuccess } = useToast();
+
+  const pendingRef = useRef(pending);
+  const switchingNetworkRef = useRef(switchingNetwork);
+  const handleClaimRef = useRef<any>();
 
   const cloBalance = useGetCLOBalance1();
 
@@ -74,65 +77,14 @@ export default function PreviousClaim() {
   }, [web3, hash]);
 
   useEffect(() => {
-    if (pending) {
-      handleClaim();
-    } else if (switchingNetwork) {
-      setSwitchingNetwork(false);
-    }
-  }, [library]);
+    pendingRef.current = pending;
+    switchingNetworkRef.current = switchingNetwork;
+  }, [pending, switchingNetwork]);
 
-  useEffect(() => {
-    if (hash === '' || hash.length !== 66) {
-      setDestinationAddress('');
-    }
-  }, [hash]);
-
-  const onPrevious = () => {
-    navigate('/select');
-  };
-
-  const onPreviousClaim = () => {
-    setPending(true);
-    handleClaim();
-  };
-
-  const switchNetworkCatch = () => {
-    setNetworkOne(NetworksObj[chainId]);
-    dispatch(setFromNetwork(NetworksObj[chainId]));
-    setSwitchingNetwork(false);
-  };
-
-  const onChangeNetworkOne = async (option: INetwork) => {
-    if (!switchingNetwork && option.name !== networkOne.name) {
-      try {
-        console.log(option);
-        setSwitchingNetwork(true);
-        setNetworkOne(option);
-        dispatch(setFromNetwork(option));
-        switchNetwork(option, library, switchNetworkCatch);
-      } catch (e) {
-        console.log(option);
-        setNetworkOne(NetworksObj[chainId]);
-        dispatch(setFromNetwork(NetworksObj[chainId]));
-        setSwitchingNetwork(false);
-      }
-    }
-  };
-
-  async function getSig3() {
-    const sig = await getSignatures(hash, fromNetwork.chainId);
-
-    if (sig.signatures.length >= requiredSignatures) {
-      return sig;
-    }
-
-    return { signatures: [], respJSON: {} };
-  }
-
-  async function handleClaim() {
+  handleClaimRef.current = async () => {
     try {
       const { signatures, respJSON } = await getSig3();
-      if (signatures.length < sigs.length) {
+      if (signatures.length < requiredSignatures) {
         setPending(false);
         toastWarning(
           'Warning!',
@@ -143,7 +95,6 @@ export default function PreviousClaim() {
       if (respJSON.chainId !== chainId.toString()) {
         const toNetwork = Networks.find((item) => item.chainId === respJSON.chainId);
         try {
-          console.log(toNetwork);
           await switchNetwork(toNetwork, library);
           return;
         } catch (error) {
@@ -162,7 +113,7 @@ export default function PreviousClaim() {
           const getTokenContract = await new ethers.Contract(bridgeAddr, getWrappedTokenABI, signer);
           const isTokenAdded = await getTokenContract.getToken(respJSON.originalToken, respJSON.originalChainID);
           let toAddress;
-          if (respJSON.originalChainID == chainId) {
+          if (Number(respJSON.originalChainID) === chainId) {
             toAddress = isTokenAdded[0];
           } else {
             toAddress = isTokenAdded[2];
@@ -293,6 +244,62 @@ export default function PreviousClaim() {
       }
       setPending(false);
     }
+  };
+
+  useEffect(() => {
+    if (pendingRef.current) {
+      handleClaimRef.current();
+    } else if (switchingNetworkRef.current) {
+      setSwitchingNetwork(false);
+    }
+  }, [library]);
+
+  useEffect(() => {
+    if (hash === '' || hash.length !== 66) {
+      setDestinationAddress('');
+    }
+  }, [hash]);
+
+  const onPrevious = () => {
+    navigate('/select');
+  };
+
+  const onPreviousClaim = () => {
+    setPending(true);
+    handleClaimRef.current();
+  };
+
+  const switchNetworkCatch = () => {
+    setNetworkOne(NetworksObj[chainId]);
+    dispatch(setFromNetwork(NetworksObj[chainId]));
+    setSwitchingNetwork(false);
+  };
+
+  const onChangeNetworkOne = async (option: INetwork) => {
+    if (!switchingNetwork && option.name !== networkOne.name) {
+      try {
+        console.log(option);
+        setSwitchingNetwork(true);
+        setNetworkOne(option);
+        dispatch(setFromNetwork(option));
+        switchNetwork(option, library, switchNetworkCatch);
+      } catch (e) {
+        console.log(option);
+        setNetworkOne(NetworksObj[chainId]);
+        dispatch(setFromNetwork(NetworksObj[chainId]));
+        setSwitchingNetwork(false);
+      }
+    }
+  };
+
+  async function getSig3() {
+    const sig = await getSignatures(hash, fromNetwork.chainId);
+
+    if (sig.signatures.length >= requiredSignatures) {
+      return sig;
+    }
+
+    return { signatures: [], respJSON: {} };
   }
 
   return (

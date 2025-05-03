@@ -2,7 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import sample from 'lodash/sample';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import Web3 from 'web3';
 import WETH_ABI from '~/app/constants/abis/weth.json';
@@ -181,14 +181,19 @@ export const useGetTokenBalance = (fromNet: any, token: any, curNet: any) => {
   const dispatch = useDispatch();
   const [pending, setPending] = useState(true);
   const { balance } = useGetWalletState();
+  const balanceRef = useRef(balance);
 
   useEffect(() => {
-    if (curNet && curNet == fromNet.chainId) {
+    balanceRef.current = balance;
+  }, [balance]);
+
+  useEffect(() => {
+    if (curNet && curNet === fromNet.chainId) {
       const getBalance = async () => {
         setPending(true);
         const tokenContract = getErc20Contract(token.address[`${fromNet.chainId}`], RPC_URL);
         const tokenBalance: BigNumber = await tokenContract.balanceOf(account, { value: 0 });
-        const balanceCopy = { ...balance };
+        const balanceCopy = { ...balanceRef.current };
         // const strBalance = balance.toString();
         if (tokenBalance) {
           const decimal = token.decimals[`${fromNet.chainId}`];
@@ -202,12 +207,12 @@ export const useGetTokenBalance = (fromNet: any, token: any, curNet: any) => {
         account &&
         chainId &&
         chainId === Number(fromNet.chainId) &&
-        token.address[`${fromNet.chainId}`].slice(0, -1) != '0x000000000000000000000000000000000000000'
+        token.address[`${fromNet.chainId}`].slice(0, -1) !== '0x000000000000000000000000000000000000000'
       ) {
         getBalance();
       }
     }
-  }, [account, chainId, RPC_URL, fromNet, dispatch]);
+  }, [account, chainId, RPC_URL, fromNet, dispatch, curNet, token]);
   return pending;
 };
 
@@ -253,7 +258,7 @@ export const useGetTokenBalances = (fromNet: any, toNet?: any) => {
     if (account && chainId && chainId === Number(fromNet.chainId)) {
       getBalance();
     }
-  }, [account, chainId, RPC_URL, fromNet, dispatch]);
+  }, [account, chainId, RPC_URL, fromNet, dispatch, toNet]);
   return pending;
 };
 

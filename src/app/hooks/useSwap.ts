@@ -39,7 +39,7 @@ const useSwap = () => {
         hash: tx.hash
       };
     },
-    [library, account, chainId]
+    [library, account, chainId, toastError]
   );
 
   const handleAdvancedSwap = useCallback(
