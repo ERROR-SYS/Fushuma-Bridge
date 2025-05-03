@@ -101,6 +101,7 @@
       }
 
       input {
+        font-family: 'NotoSans';
         padding: 7px 13px;
         width: 95%;
         margin-top: 7px;
@@ -139,12 +140,15 @@
       }
 
       .loading-balance {
+        font-family: 'NotoSans';
+
         div {
-          width: 20px;
-          height: 20px;
           margin-top: 25px;
           margin-right: 11px;
           margin-bottom: -2px;
+          width: 15px;
+          color: #ffc107;
+          height: 15px;
         }
       }
 
@@ -171,6 +175,7 @@
       }
 
       .connected-wallet-text {
+        font-family: 'NotoSans';
         font-size: 13px;
       }
 

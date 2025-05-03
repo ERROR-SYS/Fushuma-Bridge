@@ -8,6 +8,13 @@ html {
 .chain-loading {
   margin-top: 20px;
   margin-left: 3px;
+  font-family: 'NotoSans';
+
+  .spinner-border {
+    width: 15px;
+    color: #ffc107;
+    height: 15px;
+  }
 
   span {
     margin-left: 15px;

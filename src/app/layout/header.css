@@ -49,4 +49,12 @@
       width: 160px;
     }
   }
+
+  .custombutton {
+    float: right;
+  }
+}
+
+.navbar-expand-lg {
+  justify-content: space-between !important;
 }

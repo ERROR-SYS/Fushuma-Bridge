@@ -32,7 +32,7 @@ const CookiesBar = () => {
           .
         </Text>
         <Button type="button" onClick={onAccept}>
-          Accept all
+          Accept
         </Button>
       </Subcontainer>
     </Container>
@@ -59,7 +59,7 @@ const Subcontainer = styled.div`
 `;
 
 const Text = styled.p`
-  font-family: 'Lato-Regular';
+  font-family: 'NotoSans';
   font-size: 16px;
   color: white;
   line-height: 1.2;
@@ -67,30 +67,32 @@ const Text = styled.p`
 
 const Link = styled.a`
   color: white;
-  font-family: 'Lato-Bold';
+  font-family: 'NotoSans';
   font-weight: 700;
   text-decoration: none !important;
+  transition: all 0.3s;
   &:hover {
-    color: #34c88a;
+    color: #ce1f2e;
+    transition: all 0.3s;
   }
 `;
 
 const Button = styled.button`
-  margin-top: 8px;
-
+  margin-top: 15px;
   color: #000000;
   background-color: white;
   font-size: 18px;
-  font-family: 'Lato-Regular';
+  font-family: 'NotoSans';
   height: 40px;
   width: 160px;
   padding: 5px 40px;
   border: 0;
   border-radius: 52px;
+  transition: all 0.3s;
 
   &:hover {
+    transition: all 0.3s;
     font-weight: 700;
-    font-family: 'Lato-Bold';
   }
 `;
 
