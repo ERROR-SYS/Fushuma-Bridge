@@ -21,27 +21,3 @@
   justify-content: center;
   align-items: center;
 }
-
-.sc-fHsOPI {
-  font-family: 'NotoSans' !important;
-}
-
-.sc-fHsOPI path {
-  fill: #9f8455 !important
-}
-
-.sc-fHsOPI .sc-jSMfEi {
-  background-color: white !important;
-  border: 1px solid #9f8455 !important;
-  border-radius: 10px !important;
-}
-
-.sc-fHsOPI .sc-iBkjds {
-  border-top-left-radius: 10px !important;
-  border-bottom-left-radius: 10px !important;
-}
-
-.sc-fHsOPI .sc-iBkjds svg,
-.sc-fHsOPI .sc-iBkjds path {
-  fill: white !important;
-}
