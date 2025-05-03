@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
@@ -32,7 +32,13 @@ export default function Network() {
   const [networkTwo, setNetworkTwo] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>();
 
+  const loadingRef = useRef<any>(null);
+
   // const pendingBalance = useGetTokenBalances(networkOne);
+
+  useEffect(() => {
+    loadingRef.current = loading;
+  }, [loading]);
 
   useEffect(() => {
     if (networkOne?.symbol === networkTwo?.symbol) {
@@ -49,12 +55,12 @@ export default function Network() {
   }, [networkOne, library]);
 
   useEffect(() => {
-    if (loading) {
+    if (loadingRef.current) {
       setTimeout(() => {
         setLoading(false);
       }, 500);
     }
-  }, [library, loading]);
+  }, [library]);
 
   useEffect(() => {
     dispatch(setStartSwapping(false));

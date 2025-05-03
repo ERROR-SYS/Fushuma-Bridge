@@ -9,7 +9,7 @@ const useGetAllowance = (tokenAddress: string, succeed?: boolean, tokenChainId?:
   const [allowed, setAllowed] = useState('0');
 
   useEffect(() => {
-    if (tokenChainId === chainId) {
+    if (Number(tokenChainId) === chainId) {
       const get = async () => {
         try {
           const bridgeAddr = await getBridgeAddress(chainId);

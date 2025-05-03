@@ -76,6 +76,7 @@ const Swap = () => {
 
   const addWrappedTokenRef = useRef<any>(null);
   const swapCustomTokenRef = useRef<any>(null);
+  const currentChainRef = useRef<any>(null);
 
   const pendingBalance = useGetTokenBalance(fromNetwork, selectedToken, chainId);
 
@@ -136,7 +137,8 @@ const Swap = () => {
           selectedToken.address[fromNetwork.chainId],
           fromNetwork.chainId
         );
-        if (signatures.length !== requiredSignatures) {
+
+        if (signatures.length < requiredSignatures) {
           toastError('Failed to fetch signatures.');
           setPending(false);
           return { status: false, hash: null } as any;
@@ -165,6 +167,7 @@ const Swap = () => {
               gasLimit: addWrappedGasLimit.add(30000)
             }
           );
+          addWrappedTx.wait();
           const isTokenAdded = await getTokenContract.getToken(originalToken.address, originalToken.chainId);
           const token = { ...selectedToken };
           token.toAddress = isTokenAdded[2];
@@ -200,13 +203,13 @@ const Swap = () => {
   };
 
   useEffect(() => {
-    if (chainId === Number(fromNetwork.chainId) && waitingNetworkSwitchBack) {
+    if (currentChainRef.current === Number(fromNetwork.chainId) && waitingNetworkSwitchBack) {
       setWaitingNetworkSwitchBack(false);
       swapCustomTokenRef.current();
-    } else if (chainId === Number(toNetwork.chainId) && waitingNetworkSwitch) {
+    } else if (currentChainRef.current === Number(toNetwork.chainId) && waitingNetworkSwitch) {
       addWrappedTokenRef.current();
     }
-  }, [library, chainId, fromNetwork, toNetwork, waitingNetworkSwitch, waitingNetworkSwitchBack]);
+  }, [library, fromNetwork, toNetwork, waitingNetworkSwitch, waitingNetworkSwitchBack]);
 
   const onPrevious = () => {
     navigate('/tokens');
@@ -217,8 +220,14 @@ const Swap = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    setTokenBalance(balance[`${selectedToken.symbol}`]);
+    if (!pendingBalance) {
+      setTokenBalance(balance[`${selectedToken.symbol}`]);
+    }
   }, [pendingBalance, balance, selectedToken]);
+
+  useEffect(() => {
+    currentChainRef.current = chainId;
+  }, [chainId]);
 
   useEffect(() => {
     const getCurrentBlock = () => {
@@ -390,11 +399,13 @@ const Swap = () => {
           value,
           gasLimit: addTokenGas.add(30000)
         });
+        await addTokenTx.wait();
         const original = {
           address: selectedToken.address[fromNetwork.chainId],
           chainId: Number(fromNetwork.chainId)
         };
         setOriginalToken(original);
+        return addTokenTx;
       } catch (e: any) {
         setPending(false);
         if (e.code === 4001) {
@@ -403,8 +414,6 @@ const Swap = () => {
           toastError('An error occured, please try again later.');
         }
       }
-      await addTokenTx.wait();
-      return addTokenTx;
     } else {
       const original = {
         address: isTokenAdded[0],
@@ -480,6 +489,7 @@ const Swap = () => {
             updateSwapInfo(swapInfo);
             // Add the token if its not added already
             await addTokenFunction();
+            console.log('finished adding token');
             setAddingToken(false);
             // Add the wrapped version of the token if not added already
             setWaitingNetworkSwitch(true);

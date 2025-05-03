@@ -188,7 +188,7 @@ export const useGetTokenBalance = (fromNet: any, token: any, curNet: any) => {
   }, [balance]);
 
   useEffect(() => {
-    if (curNet && curNet === fromNet.chainId) {
+    if (curNet && curNet === Number(fromNet.chainId)) {
       const getBalance = async () => {
         setPending(true);
         const tokenContract = getErc20Contract(token.address[`${fromNet.chainId}`], RPC_URL);
@@ -210,6 +210,13 @@ export const useGetTokenBalance = (fromNet: any, token: any, curNet: any) => {
         token.address[`${fromNet.chainId}`].slice(0, -1) !== '0x000000000000000000000000000000000000000'
       ) {
         getBalance();
+      } else if (
+        account &&
+        chainId &&
+        chainId === Number(fromNet.chainId) &&
+        token.address[`${fromNet.chainId}`].slice(0, -1) === '0x000000000000000000000000000000000000000'
+      ) {
+        setPending(false);
       }
     }
   }, [account, chainId, RPC_URL, fromNet, dispatch, curNet, token]);
