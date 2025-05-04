@@ -475,7 +475,6 @@ const Swap = () => {
         if (!selectedToken.isCustom) {
           setPending(true);
           const tx = await onSimpleSwap(address, swapTokenAddr, bigAmount, toNetwork.chainId, value);
-          console.log(tx);
           if (tx.hash) {
             await handleSetPending(tx.hash, address);
           }
@@ -489,7 +488,6 @@ const Swap = () => {
             updateSwapInfo(swapInfo);
             // Add the token if its not added already
             await addTokenFunction();
-            console.log('finished adding token');
             setAddingToken(false);
             // Add the wrapped version of the token if not added already
             setWaitingNetworkSwitch(true);

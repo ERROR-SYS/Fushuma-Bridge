@@ -1,4 +1,5 @@
 .header {
+  justify-content: space-between !important;
   padding: rem(20px) rem(100px);
 
   @media only screen and (max-width: $md) {
@@ -53,8 +54,4 @@
   .custombutton {
     float: right;
   }
-}
-
-.navbar-expand-lg {
-  justify-content: space-between !important;
 }

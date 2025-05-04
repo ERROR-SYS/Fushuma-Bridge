@@ -193,7 +193,6 @@ export default function SwapForm({
 
   const handleMaxInput = () => {
     if (selectedToken.symbol === fromNetwork.symbol && !selectedToken.isCustom) {
-      console.log(tokenBalance);
       if (Number(tokenBalance) - gasNeeded >= 0) {
         setSwapAmount((Number(tokenBalance) - gasNeeded).toString());
         toastInfo(`'Max' Button deduces ${gasNeeded} for gas fees.`);
@@ -202,7 +201,6 @@ export default function SwapForm({
         toastWarning(`Insufficient ${selectedToken.symbol} for gas fees.`);
       }
     } else {
-      console.log(tokenBalance);
       if (Number(tokenBalance) - 0.0000001 >= 0) {
         setSwapAmount(Number(tokenBalance).toString());
       } else {
