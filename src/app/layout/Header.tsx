@@ -16,10 +16,13 @@ export default function Header() {
       <Navbar.Brand href="/">
         <img src={logo} className="header__logo" alt="logo" />
       </Navbar.Brand>
-      {/* <a href="https://callisto.network/cross-chain-bridges-security-model/" target="_blank" rel="noreferrer">
-        {t('Fushuma Security Model')}
-      </a> */}
-      <CustomButton onClick={handleLaunchWebsite}>{t('Bridge Security Model')}</CustomButton>
+      <Navbar.Toggle />
+      <Navbar.Collapse className="header__right justify-content-end">
+        {/* <a href="https://callisto.network/cross-chain-bridges-security-model/" target="_blank" rel="noreferrer">
+          {t('Fushuma Security Model')}
+        </a> */}
+        <CustomButton onClick={handleLaunchWebsite}>{t('Bridge Security Model')}</CustomButton>
+      </Navbar.Collapse>
     </Navbar>
   );
 }

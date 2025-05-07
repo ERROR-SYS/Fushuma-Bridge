@@ -123,6 +123,12 @@
     padding-bottom: rem(10px);
     letter-spacing: 0.8px;
 
+    .spinner-border {
+      width: 15px;
+      color: #ffc107;
+      height: 15px;
+    }
+
     @media screen and (max-width: 400px) {
       width: rem(150px);
       padding-bottom: rem(5px);

@@ -10,12 +10,13 @@ export const deposit_event_abi = [
   { type: 'address', name: 'toToken', internalType: 'address', indexed: false }
 ];
 
+// Always add 2 block confirmations to make sure the transaction is confirmed on backend
 export const blockConfirmations: { [chainId: number]: number } = {
-  '56': 3,
-  '1': 4,
-  '137': 300,
-  '121224': 64,
-  '8453': 300,
-  '130': 600,
-  '42161': 1200
+  '56': 5,
+  '1': 6,
+  '137': 302,
+  '121224': 66,
+  '8453': 302,
+  '130': 602,
+  '42161': 1202
 };

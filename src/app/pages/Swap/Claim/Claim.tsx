@@ -89,9 +89,6 @@ export default function Claim({ succeed, totalBlockCounts, isApproving, isAdding
     } else {
       const { signatures, respJSON } = await getSignatures(hash, fromNetwork.chainId);
 
-      console.log('signatures', signatures);
-      console.log('respJSON', respJSON);
-
       if (signatures.length < requiredSignatures) {
         setPending(false);
         toastError('Failed to fetch signatures.');
@@ -187,7 +184,7 @@ export default function Claim({ succeed, totalBlockCounts, isApproving, isAdding
           <h4>{waitingMsg}</h4>
           <p>
             {succeed
-              ? 'Please wait for 1 block confirmation before claiming your transaction.'
+              ? 'You can now claim your transaction.'
               : `${totalBlockCounts} block confirmations are needed to claim this transaction.`}
           </p>
           {/* {(cloBalance < MIN_GAS_AMOUNT[820] || cloBalance < MIN_GAS_AMOUNT[199]) &&

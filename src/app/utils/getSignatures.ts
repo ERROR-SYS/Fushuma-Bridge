@@ -27,19 +27,24 @@ const getSignaturesClaim = async (hash: string, chainId: string) => {
     const url = `${sigs[i]}auth?tx=${hash}&chain=${chainId}`;
     const resp = await fetchSig(url);
     respJSON = await resp.json();
+
     if (respJSON.isSuccess) {
       signatures.push(respJSON.signature);
       if (signatures.length >= requiredSignatures) {
         return { signatures, respJSON };
       }
-    } else if (respJSON.message.includes('Confirming')) {
-      return new Promise((resolve) => {
-        setTimeout(async () => {
-          const result = await checkSignature(i);
-          resolve(result);
-        }, 1000);
-      });
     }
+
+    // Some tests showed that this could cause infinite loop
+
+    // else if (respJSON.message.includes('Confirming')) {
+    //   return new Promise((resolve) => {
+    //     setTimeout(async () => {
+    //       const result = await checkSignature(i);
+    //       resolve(result);
+    //     }, 1000);
+    //   });
+    // }
   }
 
   for (let i = 0; i < sigs.length; i++) {
