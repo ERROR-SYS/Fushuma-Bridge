@@ -8,7 +8,7 @@ export default function Header() {
   const [t] = useTranslation();
 
   const handleLaunchWebsite = () => {
-    window.open('https://fushuma.com', '_blank');
+    window.open('https://fushuma.com/bridge-security-model/', '_blank');
   };
 
   return (
